@@ -1,0 +1,386 @@
+#python -m PyQt5.uic.pyuic -x des.ui -o des.py
+import matplotlib.pyplot as plt
+import numpy as np
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QDoubleValidator, QIntValidator
+from Generators import *
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from des import Ui_MainWindow
+
+class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+        #Generators
+        self.manager = GeneratorManager()
+        self.current_generator_name = None
+        self.data = None
+        #ComboBox
+        self.Parameters.setCurrentIndex(0)
+        self.GeneratorsList.blockSignals(True)
+        self.GeneratorsList.setCurrentIndex(-1)
+        self.GeneratorsList.blockSignals(False)
+        self.GeneratorsList.currentIndexChanged.connect(self.switch_page)
+
+        #Buttons
+        self.button_Quit.pressed.connect(self.close)
+        self.button_Reset.pressed.connect(self.reset_all_fields)
+        self.button_Generate.pressed.connect(self.generate_values)
+        self.button_setDefault.pressed.connect(self.set_default_values)
+        self.button_Save.pressed.connect(self.save_to_txt)
+        #Graphics
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+        layout = QtWidgets.QVBoxLayout(self.Graphics)
+        layout.addWidget(self.canvas)
+        self.Ax = self.figure.add_subplot()
+        #Checkbox
+        self.isInterpolate.stateChanged.connect(self.toggle_interpolation_fields)
+        self.toggle_interpolation_fields(False)
+
+
+    def switch_page(self,index):
+        if 0 <= index < self.Parameters.count()+1:
+            self.Parameters.setCurrentIndex(index+1)
+        else: self.Parameters.setCurrentIndex(0)
+        self.current_generator_name = self.GeneratorsList.currentText()
+        #print(self.current_generator_name)
+
+    def reset_all_fields(self):
+        current_page = self.Parameters.currentWidget()
+        for widget in current_page.findChildren(QtWidgets.QTextEdit):
+            widget.clear()
+        self.figure.clear()
+        self.Ax = self.figure.add_subplot()
+        self.canvas.draw_idle()
+    def generate_values(self):
+        if not self.current_generator_name:
+            QtWidgets.QMessageBox.warning(self,"Ошибка!", "Выберите задание")
+            return
+        params_widget = {}
+        match self.current_generator_name:
+            case 'Test - Sin()':
+                if self.isInterpolate.isChecked():
+                    params_widget = {
+                        'T_interval': self.T_interval,
+                        'Val_interval': self.Val_interval,
+                        'points': self.Points,
+                        't_min': self.T_min,
+                        't_max': self.T_max
+                    }
+                else:
+                    params_widget = {
+                        'amp': self.Amp,
+                        'freq': self.Freq,
+                        'phase': self.Phase,
+                        'offset': self.Offset,
+                        'points': self.Points,
+                        't_min': self.T_min,
+                        't_max': self.T_max
+                    }
+            case 'Датчик температуры':
+                if self.isInterpolate.isChecked():
+                    params_widget = {
+                        'n_outliers': self.n_out_temp,
+                        'points': self.n_points_temp,
+                        'noise_level': self.noiselvl_temp,
+                        'T_interval': self.T_interval_temp,
+                        'Val_interval': self.Val_interval_temp,
+                        't_min': self.T_min_temp,
+                        't_max': self.T_max_temp
+                    }
+            case 'Гидравлический датчик давления':
+                if self.isInterpolate.isChecked():
+                    params_widget = {
+                        'n_outliers': self.n_out_hydr,
+                        'points': self.n_points_hydr,
+                        'noise_level': self.noiselvl_hydr,
+                        'T_interval': self.T_interval_hydr,
+                        'Val_interval': self.Val_interval_hydr,
+                        't_min': self.T_min_hydr,
+                        't_max': self.T_max_hydr
+                    }
+            case 'Датчик наличия крови':
+                if self.isInterpolate.isChecked():
+                    params_widget = {
+                        'base_I': self.base_i,
+                        'points': self.n_points_bl,
+                        'shift': self.drop_val,
+                        'n_outliers': self.n_out_bl,
+                        'noise_level': self.noiselvl_bl,
+                        't_min': self.T_min_bl,
+                        't_max': self.T_max_bl,
+                        'T_interval': self.T_interval_bl,
+                        'Val_interval': self.Val_interval_bl
+                    }
+            case 'Датчик насыщения крови кислородом':
+                params_widget = {
+                    'SpO2': self.SpO2,
+                    'points': self.n_points_4
+
+                }
+            case 'Датчик ЧСС':
+                params_widget = {
+                    'points': self.n_points_5,
+                    'HeartRate': self.heartRate,
+                    'baseV': self.baseV,
+                    'amp': self.ampV
+                }
+            case 'Датчик pH':
+                params_widget = {
+
+                }
+            case 'Датчик уровня жидкости':
+                params_widget = {
+                    'num_sens': self.n_ell,
+                    'points': self.n_points_8,
+                    'err_prob': self.err_prob
+                }
+            case 'Датчик наличия пузырьков':
+                params_widget = {
+                    'points': self.n_points_9,
+                    'time_step': self.stepT
+                }
+            case 'Счетчик Гейгера':
+                params_widget = {
+                    'points': self.n_points_10,
+                }
+            case 'Датчик артериального давления':
+                params_widget = {
+                    'SBP': self.sbp,
+                    'DBP': self.dbp
+                }
+            case 'Датчик расхода':
+                params_widget = {
+                    'points': self.n_points_11
+                }
+        params, errors = self.validate_inputs(params_widget)
+        if errors:
+            QtWidgets.QMessageBox.warning(self, "Ошибка ввода!","\n".join(errors))
+            return
+        try:
+            generator = self.manager.set_generator(self.current_generator_name)
+            generator.configurate(**params)
+            generator.generate()
+            generator.plot(self.Ax)
+            self.canvas.draw_idle()
+            self.data = generator.data
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self,"Ошибка генерации",f"ошибка: {str(e)}")
+
+    def validate_inputs(self, params_widgets):
+        errors = []
+        params = {}
+        int_params = [
+            'points',
+            'n_outliers',
+            'shift',
+            'SpO2',
+            'HeartRate',
+            'num_sens',
+            'time_step'
+        ]
+        splitting_params = [
+            'T_interval',
+            'Val_interval'
+        ]
+        for param_name, widget in params_widgets.items():
+            if not widget.isVisible():
+                continue
+            text = widget.toPlainText().strip()
+            if not text:
+                errors.append(f"Поле <<{param_name}>> не заполнено")
+                continue
+            try:
+                if param_name in int_params:
+                    value = int(text)
+                elif param_name in splitting_params:
+                    values = list(map(float, text.split()))
+                    if len(values) < 2:
+                        errors.append(f"Для интерполяции нужно минимум 2 значения в поле <<{param_name}>>")
+                        continue
+                    value = values
+                else:
+                    value = float(text)
+                params[param_name] = value
+            except ValueError:
+                errors.append(f"Некорректное значение в поле <<{param_name}>>")
+        return params, errors
+    def set_default_values(self):
+        if not self.current_generator_name:
+            QtWidgets.QMessageBox.warning(self,"Ошибка!", "Выберите задание")
+            return
+        try:
+            generator = self.manager.set_generator(self.current_generator_name)
+            generator.configurate(**generator.def_params)
+            generator.generate()
+            generator.plot(self.Ax)
+            self.canvas.draw_idle()
+            self.data = generator.data
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self,"Ошибка генерации",f"ошибка: {str(e)}")
+
+    def save_to_txt(self):
+        if not hasattr(self,'data') or self.data is None:
+            QtWidgets.QMessageBox.warning(self,"Ошибка","Нечего сохранять")
+            return
+        if self.current_generator_name == 'Датчик наличия пузырьков':
+            file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Сохранить данные",
+                QtCore.QDir.currentPath()+'/Trecv',
+                "Text files (*.txt);;All Files (*)"
+            )
+            if not file_path:
+                return
+            try:
+                if not file_path.endswith('.txt'):
+                    file_path += '.txt'
+                np.savetxt(
+                    file_path,
+                    self.data[0],
+                    fmt='%.6f',
+                    delimiter=' ',
+                    newline='\n'
+                )
+                QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
+            if self.current_generator_name == 'Датчик наличия пузырьков':
+                file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                    self,
+                    "Сохранить данные",
+                    QtCore.QDir.currentPath()+'/Tsend',
+                    "Text files (*.txt);;All Files (*)"
+                )
+                if not file_path:
+                    return
+                try:
+                    if not file_path.endswith('.txt'):
+                        file_path += '.txt'
+                    np.savetxt(
+                        file_path,
+                        self.data[1],
+                        fmt='%.6f',
+                        delimiter=' ',
+                        newline='\n'
+                    )
+                    QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
+                except Exception as e:
+                    QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
+
+            return
+
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Сохранить данные",
+            QtCore.QDir.currentPath()+'/'+str(self.current_generator_name),
+            "Text files (*.txt);;All Files (*)"
+        )
+        xformat = ''
+        int_format = [
+            'Датчик температуры',
+            'Гидравлический датчик давления',
+            'Датчик наличия крови',
+            'Датчик насыщения крови кислородом',
+            'Датчик pH'
+
+        ]
+        if self.current_generator_name in int_format:
+            xformat = '%d'
+        elif self.current_generator_name == 'Датчик уровня жидкости':
+            xformat = '%d %1.3f %1.3f %1.3f %1.3f %1.3f'
+        else:
+            xformat = '%.2f'
+        if not file_path:
+            return
+        try:
+            if not file_path.endswith('.txt'):
+                file_path += '.txt'
+            np.savetxt(
+                file_path,
+                self.data,
+                fmt=xformat,
+                delimiter=' ',
+                newline='\n'
+            )
+            QtWidgets.QMessageBox.information(self,"Успех","Файл сохранен!")
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self,"Ошибка",f'ошибка: {str(e)}')
+
+    def toggle_interpolation_fields(self, state):
+        is_visible = state == QtCore.Qt.Checked
+
+        self.T_interval.setVisible(is_visible)
+        self.Val_interval.setVisible(is_visible)
+        self.T_interval_temp.setVisible(is_visible)
+        self.Val_interval_temp.setVisible(is_visible)
+        self.label_33.setVisible(is_visible)
+        self.label_34.setVisible(is_visible)
+        self.t_label_temp.setVisible(is_visible)
+        self.val_label_temp.setVisible(is_visible)
+        self.n_out_temp.setVisible(is_visible)
+        self.n_points_temp.setVisible(is_visible)
+        self.noiselvl_temp.setVisible(is_visible)
+        self.T_max_temp.setVisible(is_visible)
+        self.T_min_temp.setVisible(is_visible)
+        self.label_9.setVisible(is_visible)
+        self.label_10.setVisible(is_visible)
+        self.label_11.setVisible(is_visible)
+        self.label_35.setVisible(is_visible)
+        self.label_36.setVisible(is_visible)
+        self.label_12.setVisible(is_visible)
+        self.label_13.setVisible(is_visible)
+        self.label_14.setVisible(is_visible)
+        self.label_37.setVisible(is_visible)
+        self.label_38.setVisible(is_visible)
+        self.t_label_hydr.setVisible(is_visible)
+        self.val_label_hydr.setVisible(is_visible)
+        self.n_out_hydr.setVisible(is_visible)
+        self.n_points_hydr.setVisible(is_visible)
+        self.noiselvl_hydr.setVisible(is_visible)
+        self.T_min_hydr.setVisible(is_visible)
+        self.T_max_hydr.setVisible(is_visible)
+        self.T_interval_hydr.setVisible(is_visible)
+        self.Val_interval_hydr.setVisible(is_visible)
+        self.base_i.setVisible(is_visible)
+        self.drop_val.setVisible(is_visible)
+        self.n_points_bl.setVisible(is_visible)
+        self.n_out_bl.setVisible(is_visible)
+        self.noiselvl_bl.setVisible(is_visible)
+        self.T_interval_bl.setVisible(is_visible)
+        self.Val_interval_bl.setVisible(is_visible)
+        self.T_max_bl.setVisible(is_visible)
+        self.T_min_bl.setVisible(is_visible)
+        self.label_15.setVisible(is_visible)
+        self.label_16.setVisible(is_visible)
+        self.label_17.setVisible(is_visible)
+        self.label_39.setVisible(is_visible)
+        self.label_40.setVisible(is_visible)
+        self.label_41.setVisible(is_visible)
+        self.label_42.setVisible(is_visible)
+        self.t_label_bl.setVisible(is_visible)
+        self.val_label_bl.setVisible(is_visible)
+
+
+        self.Amp.setVisible(not is_visible)
+        self.Freq.setVisible(not is_visible)
+        self.Phase.setVisible(not is_visible)
+        self.Offset.setVisible(not is_visible)
+        self.label_2.setVisible(not is_visible)
+        self.label_3.setVisible(not is_visible)
+        self.label_4.setVisible(not is_visible)
+        self.label_5.setVisible(not is_visible)
+
+        self.button_setDefault.setVisible(not is_visible)
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+    window = FPIBS_Generator()
+    window.show()
+    app.exec_()
+
+
