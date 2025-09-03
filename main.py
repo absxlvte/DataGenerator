@@ -24,6 +24,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GeneratorsList.blockSignals(False)
         self.GeneratorsList.currentIndexChanged.connect(self.switch_page)
 
+
         #Buttons
         self.button_Quit.pressed.connect(self.close)
         self.button_Reset.pressed.connect(self.reset_all_fields)
