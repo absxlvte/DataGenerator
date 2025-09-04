@@ -69,7 +69,7 @@ def create_dynamix(time_intervals_array_np,extremum_values_array_np,T_start,T_st
 
 def create_pulse_wave(Amp=1,t_start=0,t_stop=5,zero_offset=0, points=1000, inverse=False):
     t_ref = [0.5, 0.7, 1.0, 1.5, 1.7]
-    V_ref = [1, 0.2, 0.25, 0, 0]
+    V_ref = [1, 0.7, 0.75, 0, 0]
     #V_ref = [1-0.5, 0.3-0.5, 0.4-0.5, 0-0.5, 0-0.5]
     period = 1.5
     T = math.ceil((t_stop - t_start)/period)
@@ -78,10 +78,11 @@ def create_pulse_wave(Amp=1,t_start=0,t_stop=5,zero_offset=0, points=1000, inver
     for i in range(T):
         t.extend([x + i * period for x in t_ref])
         V.extend(V_ref)
+    V = [x-0.5 for x in V]
     V_new, t_new = create_dynamix(t, V, t_start, T * period, points)
     if inverse:
         V_new = V_new*(-1)
-    return t_new,V_new*2*Amp+zero_offset-0.5
+    return t_new,V_new*2*Amp+zero_offset
 
 def v_in_z(V,N,V_ref):
     return (2**N*V)/V_ref
