@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 import matplotlib.pyplot as plt
+from fontTools.merge.util import first
 from scipy.signal import find_peaks
 from func import *
 
@@ -369,11 +370,32 @@ class PPGSensor(DataGenerator):
         }
         self.signal = None
         self.time = None
+        self.result = None
     def configurate(self,SpO2,points):
         if SpO2 is not None: self.params['SpO2'] = SpO2
         if points is not None: self.params['points'] = points
     def generate(self):
-        self.time = np.linspace(0, 5, self.params['points'])
+        DC660,DC940 = 1.3, 1.5
+        AC660 = 0.6
+        AC940 = (AC660*self.params['B']*DC940)/(DC660*(self.params['A']-self.params['SpO2']))
+        print(f"AC940 = {AC940} AC660 = {AC660}")
+        print(f"R = {(AC660/DC660)/(AC940/DC940)}")
+        t, V660 = create_pulse_wave(Amp=AC660,zero_offset=DC660,points=self.params['points'],inverse=False)
+        t, V940 = create_pulse_wave(Amp=AC940,zero_offset=DC940,points=self.params['points'],inverse=False)
+        self.time = t
+        self.data_660 = v_in_z(V660,self.params['N'],self.params['Vref'])
+        self.data_940 = v_in_z(V940,self.params['N'],self.params['Vref'])
+
+        ac660first = (max(self.data_940 - np.mean(self.data_940))-min(self.data_940 - np.mean(self.data_940)))/2
+        ac940second = (max(self.data_660 - np.mean(self.data_660))-min(self.data_660 - np.mean(self.data_660)))/2
+        print(f"AC940* = {z_in_v(ac660first,self.params['N'],self.params['Vref'])}, AC660* = {z_in_v(ac940second,self.params['N'],self.params['Vref'])}")
+        print(f"DC660* = {z_in_v(np.mean(self.data_660),self.params['N'],self.params['Vref'])} DC940* = {z_in_v(np.mean(self.data_940),self.params['N'],self.params['Vref'])}")
+        print(f"DC660 = {DC660} DC940 = {DC940}")
+        R = (ac940second/np.mean(self.data_660))/(ac660first/np.mean(self.data_940))
+        print(f"R* = {R}")
+        self.result = self.params['A']-self.params['B']*R
+
+        '''self.time = np.linspace(0, 5, self.params['points'])
         DC_660 = self.U_to_Z(1)
         DС_940 = ((self.params['A']-self.params['SpO2'])*self.U_to_Z(0.45))/(self.params['B']*(self.U_to_Z(0.55)/DC_660))
         Z_660 = self.U_to_Z(1-0.1)/2*np.sin(2*np.pi*1.2*self.time)+self.U_to_Z(0.55)
@@ -406,7 +428,7 @@ class PPGSensor(DataGenerator):
         Z_940 += 10*noise_940
         self.data_660 = Z_660
         self.data_940 = Z_940
-        self.data = np.column_stack((Z_660, Z_940))
+        self.data = np.column_stack((Z_660, Z_940))'''
         #print(f"DC_660={DC_660} DС_940={DС_940}")
 
         #data = np.loadtxt('qwe.txt', dtype=int)
@@ -428,8 +450,6 @@ class PPGSensor(DataGenerator):
         #A, B = 110, 25
         #SpO2 = A - B * R
         #print(f"SpO2 = {SpO2}%")
-    def U_to_Z(self,v):
-        return 2**self.params['N']*v/self.params['Vref']
     def plot(self,ax):
         if hasattr(self, 'data_660') and hasattr(self, 'data_940'):
             ax.clear()
@@ -440,6 +460,8 @@ class PPGSensor(DataGenerator):
             ax.set_ylabel("Z")
             ax.legend(loc='upper right')
             #ax.set_ylim(0,65535)
+            print(f"task: {self.params['SpO2']}")
+            print(f"result: {self.result}")
             return ax
 
 class HeartRateSensor(DataGenerator):

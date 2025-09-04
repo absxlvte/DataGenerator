@@ -30,10 +30,11 @@ V_940 = dc_940 + ac_940
 #print(t)
 
 #V_new, t_new = create_dynamix(t,V,0,T*period,1000)
-t_new, V_new = create_pulse_wave(Amp=10,zero_offset=4)
+t_new, V_new = create_pulse_wave(Amp=1.5,zero_offset=0.6)
+print(f"mean = {np.mean(V_new)}")
 plt.figure()
-plt.plot(t_new,V_new)
-
+#plt.plot(t_new,V_new, t_new,np.ones(len(t_new))*np.mean(V_new),t_new,np.ones(len(t_new))*1.5)
+plt.plot(t_new,V_new, t_new,np.ones(len(t_new))*np.mean(V_new),t_new,np.ones(len(t_new))*0.6)
 plt.show()
 
 # Построение графиков
