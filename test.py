@@ -18,11 +18,21 @@ ac_940 = -0.4 * heartbeat # ИК сигнал: больше крови -> мен
 V_660 = dc_660 + ac_660
 V_940 = dc_940 + ac_940
 
-t = [0,0.15,0.85,1.05,1.35,1.5]
-V = [0,0,1,0.5,0.7,0]
-V_new, t_new = create_dynamix(t,V,0,1.5,100)
+#t_ref = [0.5,0.7,0.8,1.5,1.7 ]
+#V_ref = [1,0.7,0.8,0, 0]
+#period = 1.5
+#T = 3
+#t = [0, 0.2]
+#V = [0, 0]
+#for i in range(T):
+#    t.extend([x+i*period for x in t_ref])
+#    V.extend(V_ref)
+#print(t)
+
+#V_new, t_new = create_dynamix(t,V,0,T*period,1000)
+t_new, V_new = create_pulse_wave(Amp=10,zero_offset=4)
 plt.figure()
-plt.plot(t_new,V_new, t,V,'r--')
+plt.plot(t_new,V_new)
 
 plt.show()
 
