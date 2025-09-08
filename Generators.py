@@ -37,7 +37,8 @@ class GeneratorManager:
             'Датчик наличия пузырьков': BubbleSensor(),
             'Счетчик Гейгера': GeigerSensor(),
             'Датчик артериального давления': BloodPressureSensor(),
-            'Датчик расхода': ConsSensor()
+            'Датчик расхода': ConsSensor(),
+            'Датчик нитратов': NitrateSensor()
         }
         self.current_generator = None
     def set_generator(self,name):
@@ -795,3 +796,22 @@ class ConsSensor(DataGenerator):
             ax.plot(self.data)
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
+
+class NitrateSensor(DataGenerator):
+    def __init__(self):
+        super().__init__()
+        self.data = None
+        self.params = {
+
+        }
+        self.def_params = {
+
+        }
+        self.signal = None
+        self.time = None
+    def configurate(self):
+        pass
+    def generate(self):
+        pass
+    def plot(self,ax):
+        pass

@@ -118,6 +118,11 @@
       <string>Датчик расхода</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Датчик нитратов</string>
+     </property>
+    </item>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -142,7 +147,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1414,6 +1419,21 @@
       </property>
       <property name="text">
        <string>Число точек</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="pageNitrates">
+     <widget class="QTextEdit" name="sbp_2">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>180</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>нитраты</string>
       </property>
      </widget>
     </widget>

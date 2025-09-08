@@ -89,6 +89,18 @@ def v_in_z(V,N,V_ref):
 
 def z_in_v(Z,N,V_ref):
     return (Z*V_ref)/(2**N)
+def create_HeartRate(bpm,t_stop, v_min,v_max,points):
+    t,val = [],[]
+    a0 = [0, 1, 40, 1, 0, -34, 118, -99, 0, 2, 21, 2, 0, 0, 0];
+    d0 = [0, 27, 59, 91, 131, 141, 163, 185, 195, 275, 307, 339, 357, 390, 440];
+    ctn = math.ceil(60000/bpm)
+    a = [x / max(a0) for x in a0]
+    d = [x * ctn / d0[-1] for x in d0]
+    for i in range(math.ceil((t_stop)/ctn)):
+        t.extend([x + i * ctn for x in d])
+        val.extend(a)
+    y, t = create_dynamix(np.array(t), np.array(val), 0, t_stop, points)
+    return t,y
 
 # Пример использования
 #t = np.array([0, 60, 160, 210, 410, 530, 660, 760, 830, 930, 960, 1060])
