@@ -380,11 +380,13 @@ class PPGSensor(DataGenerator):
         AC940 = (AC660*self.params['B']*DC940)/(DC660*(self.params['A']-self.params['SpO2']))
         print(f"AC940 = {AC940} AC660 = {AC660}")
         print(f"R = {(AC660/DC660)/(AC940/DC940)}")
-        t, V660 = create_pulse_wave(Amp=AC660,zero_offset=DC660,points=self.params['points'],inverse=False)
+        t, V660 = create_pulse_wave(Amp=AC660,zero_offset=DC660,points=self.params['points'],inverse=True) #need think
         t, V940 = create_pulse_wave(Amp=AC940,zero_offset=DC940,points=self.params['points'],inverse=False)
         self.time = t
         self.data_660 = v_in_z(V660,self.params['N'],self.params['Vref'])
+        self.data_660 = [max(0, min(x, 2**self.params['N'])) for x in  self.data_660]
         self.data_940 = v_in_z(V940,self.params['N'],self.params['Vref'])
+        self.data_940 = [max(0, min(x, 2**self.params['N'])) for x in self.data_940]
 
         ac660first = (max(self.data_940 - np.mean(self.data_940))-min(self.data_940 - np.mean(self.data_940)))/2
         ac940second = (max(self.data_660 - np.mean(self.data_660))-min(self.data_660 - np.mean(self.data_660)))/2
