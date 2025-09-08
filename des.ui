@@ -58,6 +58,9 @@
     <property name="currentIndex">
      <number>-1</number>
     </property>
+    <property name="maxVisibleItems">
+     <number>20</number>
+    </property>
     <item>
      <property name="text">
       <string>Test - Sin()</string>
