@@ -1,8 +1,10 @@
 import math
-
+from typing import Literal
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from enum import Enum
+
 def pchip_slopes(x, y):
     n = len(x)
     h = np.diff(x)
@@ -102,6 +104,13 @@ def create_HeartRate(bpm,t_stop, v_min,v_max,points):
     y, t = create_dynamix(np.array(t), np.array(val), 0, t_stop, points)
     return t,y
 
+
+
+
+def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],points,Hlimit,Llimit):
+    if product not in ['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers']:
+        raise ValueError(f'missing product')
+    pass
 # Пример использования
 #t = np.array([0, 60, 160, 210, 410, 530, 660, 760, 830, 930, 960, 1060])
 #y = np.array([120, 120, 250, 50, 140, 120, 120, 200, 60, 130, 120, 120])
