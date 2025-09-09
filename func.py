@@ -3,6 +3,7 @@ from typing import Literal
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from random import randrange
 from enum import Enum
 
 def pchip_slopes(x, y):
@@ -92,25 +93,47 @@ def v_in_z(V,N,V_ref):
 def z_in_v(Z,N,V_ref):
     return (Z*V_ref)/(2**N)
 def create_HeartRate(bpm,t_stop, v_min,v_max,points):
+    #max bpm 250
     t,val = [],[]
-    a0 = [0, 1, 40, 1, 0, -34, 118, -99, 0, 2, 21, 2, 0, 0, 0];
-    d0 = [0, 27, 59, 91, 131, 141, 163, 185, 195, 275, 307, 339, 357, 390, 440];
-    ctn = math.ceil(60000/bpm)
+    a0 = [0, 1, 40, 1, 0, -34, 118, -99, 0, 2, 21, 2, 0, 0, 0]
+    d0 = [0,27/3,60/3,90/3,132/3,141/3,162/3,186/3,195/3,276/3,306/3,339/3,357/3,390/3,420/3]
     a = [x / max(a0) for x in a0]
-    d = [x * ctn / d0[-1] for x in d0]
-    for i in range(math.ceil((t_stop)/ctn)):
-        t.extend([x + i * ctn for x in d])
+    delay = (60000 - bpm*140)/bpm
+    for i in range(bpm):
+        t.extend([x + i * (140+delay) for x in d0])
+        t.append((i+1)*(140+delay))
         val.extend(a)
-    y, t = create_dynamix(np.array(t), np.array(val), 0, t_stop, points)
+        val.append(0)
+    y, t = create_dynamix(np.array(t), np.array(val), 0, 60000, points)
+    #y = val
     return t,y
 
 
 
 
-def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],points,Hlimit,Llimit):
+def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],
+                  points:int, state: Literal['normal','increase','decrease']):
     if product not in ['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers']:
         raise ValueError(f'missing product')
-    pass
+    if state not in ['normal','increase','decrease']:
+        raise ValueError(f'missing state')
+    z_values = {'Tomatoes':(33,36),
+                'Spinach':(15,20),
+                'Beet':(17,21),
+                'Cabbage':(22,25),
+                'Carrot':(25,31),
+                'Potato':(28,33),
+                'Cucumbers':(31,33)}
+    Hlimit,Llimit =  85,12
+    t = range(points)
+    match state:
+        case 'normal':
+            z = [randrange(z_values[product][0],z_values[product][1]) for _ in t]
+        case 'increase':
+            z = [randrange(z_values[product][1]+1, Hlimit) for _ in t]
+        case 'decrease':
+            z = [randrange(Llimit, z_values[product][0]-1) for _ in t]
+    return z
 # Пример использования
 #t = np.array([0, 60, 160, 210, 410, 530, 660, 760, 830, 930, 960, 1060])
 #y = np.array([120, 120, 250, 50, 140, 120, 120, 200, 60, 130, 120, 120])
