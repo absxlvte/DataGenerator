@@ -150,7 +150,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1426,18 +1426,318 @@
      </widget>
     </widget>
     <widget class="QWidget" name="pageNitrates">
-     <widget class="QTextEdit" name="sbp_2">
+     <widget class="QTextEdit" name="NitratePoints">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>180</y>
+        <x>20</x>
+        <y>50</y>
         <width>161</width>
         <height>41</height>
        </rect>
       </property>
       <property name="placeholderText">
-       <string>нитраты</string>
+       <string>100</string>
       </property>
+     </widget>
+     <widget class="QLabel" name="label_43">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Число точек</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_44">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>110</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Помидоры</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_45">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>150</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Шпинат</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_46">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>190</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Свекла</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_47">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>230</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Капуста</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_48">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>270</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Морковь</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_49">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>310</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Картофель</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_50">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>350</y>
+        <width>161</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Огурцы</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="TomatoesState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>120</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="SpinachState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>160</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="BeetState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>200</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="CabbageState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>240</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="CarrotState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>280</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="PotatoState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>320</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="CucumbersState">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>360</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>Высокий</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Норма</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Низкий</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>

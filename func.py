@@ -134,14 +134,3 @@ def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot
         case 'decrease':
             z = [randrange(Llimit, z_values[product][0]-1) for _ in t]
     return z
-# Пример использования
-#t = np.array([0, 60, 160, 210, 410, 530, 660, 760, 830, 930, 960, 1060])
-#y = np.array([120, 120, 250, 50, 140, 120, 120, 200, 60, 130, 120, 120])
-#t_new = np.linspace(0, 1060, 1000)
-#y_interp = pchip_interpolate(t, y, t_new)
-
-#plt.figure()
-#plt.plot(t_new,y_interp)
-#plt.figure()
-#plt.plot(t,y)
-#plt.show()
