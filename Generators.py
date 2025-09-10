@@ -800,18 +800,56 @@ class ConsSensor(DataGenerator):
 class NitrateSensor(DataGenerator):
     def __init__(self):
         super().__init__()
-        self.data = None
+        self.data = {}
         self.params = {
-
+            'points': 100,
+            'Tomatoes': None,
+            'Spinach': None,
+            'Beet': None,
+            'Cabbage': None,
+            'Carrot': None,
+            'Potato': None,
+            'Cucumbers': None
         }
         self.def_params = {
-
+            'points': 100,
+            'Tomatoes': 1,
+            'Spinach': 1,
+            'Beet': 1,
+            'Cabbage': 1,
+            'Carrot': 1,
+            'Potato': 1,
+            'Cucumbers': 1
         }
         self.signal = None
         self.time = None
-    def configurate(self):
-        pass
+    def configurate(self,points,Tomatoes,Spinach,Beet,Cabbage,Carrot,Potato,Cucumbers):
+        if points is not None: self.params['points'] = points
+        if Tomatoes is not None: self.params['Tomatoes'] = Tomatoes
+        if Spinach is not None: self.params['Spinach'] = Spinach
+        if Beet is not None: self.params['Beet'] = Beet
+        if Cabbage is not None: self.params['Cabbage'] = Cabbage
+        if Carrot is not None: self.params['Carrot'] = Carrot
+        if Potato is not None: self.params['Potato'] = Potato
+        if Cucumbers is not None: self.params['Cucumbers'] = Cucumbers
+
     def generate(self):
-        pass
+        for product in ['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers']:
+            state = None
+            match self.params[product]:
+                case 0:
+                    state = 'increase'
+                case 1:
+                    state = 'normal'
+                case 2:
+                    state = 'decrease'
+            self.data[product] = createNitrate(product,self.params['points'],state)
+        #print(self.data)
     def plot(self,ax):
-        pass
+        if self.data is not None:
+            ax.clear()
+            for product, values in self.data.items():
+                ax.plot(values, label=product, marker='.')
+                ax.legend(loc='upper left',framealpha=1)
+            ax.set_title(f"{self.__class__.__name__} Data")
+            return ax

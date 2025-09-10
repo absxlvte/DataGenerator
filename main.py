@@ -53,6 +53,8 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         current_page = self.Parameters.currentWidget()
         for widget in current_page.findChildren(QtWidgets.QTextEdit):
             widget.clear()
+        for widget in current_page.findChildren(QtWidgets.QComboBox):
+            widget.setCurrentIndex(1)
         self.figure.clear()
         self.Ax = self.figure.add_subplot()
         self.canvas.draw_idle()
@@ -157,6 +159,17 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 params_widget = {
                     'points': self.n_points_11
                 }
+            case 'Датчик нитратов':
+                params_widget = {
+                    'points': self.NitratePoints,
+                    'Tomatoes': self.TomatoesState,
+                    'Spinach': self.SpinachState,
+                    'Beet': self.BeetState,
+                    'Cabbage': self.CabbageState,
+                    'Carrot': self.CarrotState,
+                    'Potato': self.PotatoState,
+                    'Cucumbers': self.CucumbersState
+                }
         params, errors = self.validate_inputs(params_widget)
         if errors:
             QtWidgets.QMessageBox.warning(self, "Ошибка ввода!","\n".join(errors))
@@ -187,14 +200,30 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             'T_interval',
             'Val_interval'
         ]
+        chosen_params = [
+            'Tomatoes',
+            'Spinach',
+            'Beet',
+            'Cabbage',
+            'Carrot',
+            'Potato',
+            'Cucumbers'
+        ]
         for param_name, widget in params_widgets.items():
             if not widget.isVisible():
                 continue
-            text = widget.toPlainText().strip()
-            if not text:
-                errors.append(f"Поле <<{param_name}>> не заполнено")
-                continue
+            if param_name in chosen_params:
+                value = widget.currentIndex()
+            else:
+                text = widget.toPlainText().strip()
+                if not text:
+                    errors.append(f"Поле <<{param_name}>> не заполнено")
+                    continue
             try:
+                if param_name in chosen_params:
+                    params[param_name] = value
+                    #print(f'value - {value}')
+                    continue
                 if param_name in int_params:
                     value = int(text)
                 elif param_name in splitting_params:
@@ -227,6 +256,29 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         if not hasattr(self,'data') or self.data is None:
             QtWidgets.QMessageBox.warning(self,"Ошибка","Нечего сохранять")
             return
+        if self.current_generator_name == 'Датчик нитратов':
+            directory = QtWidgets.QFileDialog.getExistingDirectory(
+                self,
+                "Выберите папку для сохранения",
+                QtCore.QDir.currentPath(),
+                QtWidgets.QFileDialog.ShowDirsOnly
+            )
+            if not directory:
+                return
+            for filename, values in self.data.items():
+                safe_filename = f"{filename.replace(' ', '_')}.txt"
+                file_path = QtCore.QDir(directory).filePath(safe_filename)
+
+                with open(file_path, 'w', encoding='utf-8') as file:
+                    values_str = ' '.join(map(str, values))
+                    file.write(values_str)
+            QtWidgets.QMessageBox.information(
+                self,
+                "Сохранение завершено",
+                f"Файлы успешно сохранены в папку:\n{directory}\n\n"
+                f"Сохранено файлов: {len(self.data)}")
+            return
+
         if self.current_generator_name == 'Датчик наличия пузырьков':
             file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self,
