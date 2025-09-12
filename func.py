@@ -137,7 +137,7 @@ def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot
             z = [randrange(Llimit, z_values[product][0]-1) for _ in t]
     return z
 
-def createGlucoza():
+def createGlucoza(points):
     f = np.linspace(10, 100, 10)
     y1 = (700 / (f + 10) + 10) * np.cos(np.deg2rad(np.random.randint(-5, 5, 1)[0]))
     y2 = (700 / (f + 10) + 15) * np.cos(np.deg2rad(np.random.randint(-5, 5, 1)[0]))
@@ -172,6 +172,7 @@ def createGlucoza():
     s10 = trapezoid(y10, f)
     k = (300 - 20) / (s1 - s10)
     b = 300 - k * s1
+    print(f'k = {k}, b = {b}')
     c = []
     a = 0.7
     for h in range(55, 10, -1):
@@ -182,19 +183,20 @@ def createGlucoza():
         c.append(c_val[0])
     ts = [0, 60, 160, 210, 410, 530, 660, 760, 830, 930, 960, 1060]
     ys = [120, 120, 250, 50, 140, 120, 120, 200, 60, 130, 120, 120]
-    y_interp, t_new = create_dynamix(ts, ys, 0, 1060, 1000)
+    y_interp, t_new = create_dynamix(ts, ys, 0, 1060, points)
     y_ref = y_interp
     values = y_ref
     massiv = []
     for i in range(len(values)):
-        buf = (700 / (f + 10) + values[i]) * np.cos(np.deg2rad(np.random.randint(-5, 5, )))
+        buf = (700 / (f + 10) + values[i]) * np.cos(np.deg2rad(np.random.randint(-5, 5)))
         buf = np.round(buf + a * np.random.randn(len(buf)))
         massiv.append(buf)
     massiv = np.array(massiv)
     final_c = []
     for i in range(massiv.shape[0]):
         buf = trapezoid(massiv[i, :], f)
+        print(f'buf = {buf}')
         temp = k * buf + b
         final_c.append(temp)
     final_c = np.array(final_c)
-    pass
+    return massiv,final_c,t_new

@@ -170,6 +170,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                     'Potato': self.PotatoState,
                     'Cucumbers': self.CucumbersState
                 }
+            case 'Датчик глюкозы':
+                params_widget = {
+                    'points': self.GlukozaPoints
+                }
         params, errors = self.validate_inputs(params_widget)
         if errors:
             QtWidgets.QMessageBox.warning(self, "Ошибка ввода!","\n".join(errors))

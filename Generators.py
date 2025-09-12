@@ -38,7 +38,8 @@ class GeneratorManager:
             'Счетчик Гейгера': GeigerSensor(),
             'Датчик артериального давления': BloodPressureSensor(),
             'Датчик расхода': ConsSensor(),
-            'Датчик нитратов': NitrateSensor()
+            'Датчик нитратов': NitrateSensor(),
+            'Датчик глюкозы': GlucozeSensor()
         }
         self.current_generator = None
     def set_generator(self,name):
@@ -860,5 +861,27 @@ class NitrateSensor(DataGenerator):
             for product, values in self.data.items():
                 ax.plot(values, label=product, marker='.')
                 ax.legend(loc='upper left',framealpha=1)
+            ax.set_title(f"{self.__class__.__name__} Data")
+            return ax
+class GlucozeSensor(DataGenerator):
+    def __init__(self):
+        super().__init__()
+        self.data = None
+        self.val = None
+        self.time = None
+        self.params = {
+            'points': 1000
+        }
+        self.def_params = {
+            'points': 1000
+        }
+    def configurate(self, points):
+        if points is not None: self.params['points'] = points
+    def generate(self):
+        self.data, self.val, self.time = createGlucoza(self.params['points'])
+    def plot(self,ax):
+        if self.data is not None:
+            ax.clear()
+            ax.plot(self.time,self.val)
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
