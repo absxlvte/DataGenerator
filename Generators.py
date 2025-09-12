@@ -320,6 +320,15 @@ class BloodSensor(DataGenerator):
             min_offset, max_offset, offset = self.I_to_Z(self.params['base_I'])-self.params['shift'], self.I_to_Z(self.params['base_I'])+self.params['shift'], self.I_to_Z(self.params['base_I'])
             self.normalize(min_offset, max_offset,offset)
             self.data = self.data.astype(int)
+            #student:
+            vst = [z*5/(2**12) for z in self.data]
+            Ist = [v/0.5 for v in vst]
+            plt.figure()
+            plt.plot(range(len(Ist)),Ist, range(len(Ist)), np.ones(len(Ist))*7)
+            plt.show()
+
+
+
 
     def normalize(self, min_val, max_val, offset):
         current_min = np.min(self.data)
