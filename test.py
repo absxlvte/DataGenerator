@@ -2,17 +2,19 @@ from func import *
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-
+import os
 #a0 = [0, 1, 40, 1, 0, -34, 118, -99, 0, 2, 21, 2, 0, 0, 0]
 #d0 = [0,27/3,60/3,90/3,132/3,141/3,162/3,186/3,195/3,276/3,306/3,339/3,357/3,390/3,420/3]
 #a = [x / max(a0) for x in a0]
 #delay = (60000 - 80*140)/80
-
-z = createNitrate('Beet',100,'normal')
+'''print('qweqweqwe')
+a = input('qweqe')
+os.system('cls')'''
+'''z = createNitrate('Beet',100,'normal')
 print(*z)
 plt.figure()
 plt.plot(z,'b')
-plt.show()
+plt.show()'''
 #t, val = d0,a
 
 #for i in range(80-1):
