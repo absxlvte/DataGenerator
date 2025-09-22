@@ -1,13 +1,6 @@
-import math
-from func import *
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-import os
+from scipy.integrate import trapezoid
 
-
-massiv, val, time = createGlucoza(1000)
-
-plt.figure()
-plt.plot(time,val)
-plt.show()
+y = [0,1,4,9,16]
+x = [0,1,2,3,4]
+s = trapezoid(y,x)
+print(s)

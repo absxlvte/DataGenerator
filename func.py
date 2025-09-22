@@ -192,10 +192,11 @@ def createGlucoza(points):
         buf = np.round(buf + a * np.random.randn(len(buf)))
         massiv.append(buf)
     massiv = np.array(massiv)
+    print(*massiv)
     final_c = []
     for i in range(massiv.shape[0]):
         buf = trapezoid(massiv[i, :], f)
-        print(f'buf = {buf}')
+        #print(f'buf = {buf}')
         temp = k * buf + b
         final_c.append(temp)
     final_c = np.array(final_c)
