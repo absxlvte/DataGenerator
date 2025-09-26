@@ -1,6 +1,21 @@
-from scipy.integrate import trapezoid
+import matplotlib.pyplot as plt
+data = []
+with open("data_blood.txt", "r") as file:
+    data = file.readlines()
+value = {}
+for point in data:
+    value.update({float(point.split()[0]):float(point.split()[1])})
+print(*value)
 
-y = [0,1,4,9,16]
-x = [0,1,2,3,4]
-s = trapezoid(y,x)
-print(s)
+vst = [z*5/(2**12) for z in value.values()]
+Ist = [v/0.5 for v in vst]
+
+plt.figure()
+plt.plot(value.keys(),value.values())
+
+plt.figure()
+plt.plot(value.keys(),Ist)
+
+plt.show()
+
+
