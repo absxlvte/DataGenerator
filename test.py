@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+'''import matplotlib.pyplot as plt
 data = []
 with open("data_blood.txt", "r") as file:
     data = file.readlines()
@@ -17,5 +17,4 @@ plt.figure()
 plt.plot(value.keys(),Ist)
 
 plt.show()
-
-
+'''
