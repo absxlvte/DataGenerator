@@ -878,7 +878,7 @@ class GlucozeSensor(DataGenerator):
     def configurate(self, points):
         if points is not None: self.params['points'] = points
     def generate(self):
-        self.data, self.val, self.time = createGlucoza(self.params['points'])
+        self.data, self.val, self.time = createGlucoza(points=self.params['points'])
     def plot(self,ax):
         if self.data is not None:
             ax.clear()
