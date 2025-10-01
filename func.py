@@ -95,23 +95,6 @@ def v_in_z(V,N,V_ref):
 
 def z_in_v(Z,N,V_ref):
     return (Z*V_ref)/(2**N)
-def create_HeartRate(bpm,t_stop, v_min,v_max,points):
-    #max bpm 250
-    t,val = [],[]
-    a0 = [0, 1, 40, 1, 0, -34, 118, -99, 0, 2, 21, 2, 0, 0, 0]
-    d0 = [0,27/3,60/3,90/3,132/3,141/3,162/3,186/3,195/3,276/3,306/3,339/3,357/3,390/3,420/3]
-    a = [x / max(a0) for x in a0]
-    delay = (60000 - bpm*140)/bpm
-    for i in range(bpm):
-        t.extend([x + i * (140+delay) for x in d0])
-        t.append((i+1)*(140+delay))
-        val.extend(a)
-        val.append(0)
-    y, t = create_dynamix(np.array(t), np.array(val), 0, 60000, points)
-    #y = val
-    return t,y
-
-
 
 
 def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],
