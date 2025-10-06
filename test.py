@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.signal import find_peaks
 
-
+'''
 def is_non_decreasing(arr):
     return np.all(np.diff(arr) > 0)
 
@@ -66,4 +66,11 @@ print(len(ex.keys()))
 plt.figure()
 plt.plot(t,y, ex.keys(),ex.values(),'x')
 plt.xlim(0,10000)
-plt.show()
+plt.show()'''
+
+#converting \n\r -> None
+'''qwe = ""
+with open("repl.txt",'r') as file:
+    qwe = file.read()
+qwe = qwe.replace('\n', '').replace('\r', '').replace(' ','')
+print(qwe)'''

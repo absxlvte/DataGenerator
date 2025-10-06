@@ -391,78 +391,33 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         is_visible = state == QtCore.Qt.Checked
 
         hiddenWidgets= [
-            self.Amp,
-            self.Freq,
-            self.Phase,
-            self.Offset,
-            self.label_2,
-            self.label_3,
-            self.label_4,
-            self.label_5,
-            self.button_setDefault,
+            self.Amp,self.Freq,self.Phase,
+            self.Offset,self.label_2,self.label_3,
+            self.label_4,self.label_5,self.button_setDefault
         ]
         unHiddenWidgets = [
-            self.T_interval,
-            self.Val_interval,
-            self.T_interval_temp,
-            self.Val_interval_temp,
-            self.label_33,
-            self.label_34,
-            self.t_label_temp,
-            self.val_label_temp,
-            self.n_out_temp,
-            self.n_points_temp,
-            self.noiselvl_temp,
-            self.T_max_temp,
-            self.T_min_temp,
-            self.label_9,
-            self.label_10,
-            self.label_11,
-            self.label_35,
-            self.label_36,
-            self.label_12,
-            self.label_13,
-            self.label_14,
-            self.label_37,
-            self.label_38,
-            self.t_label_hydr,
-            self.val_label_hydr,
-            self.n_out_hydr,
-            self.n_points_hydr,
-            self.noiselvl_hydr,
-            self.T_min_hydr,
-            self.T_max_hydr,
-            self.T_interval_hydr,
-            self.Val_interval_hydr,
-            self.base_i,
-            self.drop_val,
-            self.n_points_bl,
-            self.n_out_bl,
-            self.noiselvl_bl,
-            self.T_interval_bl,
-            self.Val_interval_bl,
-            self.T_max_bl,
-            self.T_min_bl,
-            self.label_15,
-            self.label_16,
-            self.label_17,
-            self.label_39,
-            self.label_40,
-            self.label_41,
-            self.label_42,
-            self.t_label_bl,
-            self.val_label_bl
+            self.T_interval,self.Val_interval,
+            self.T_interval_temp,self.Val_interval_temp,
+            self.label_33,self.label_34,self.t_label_temp,
+            self.val_label_temp,self.n_out_temp,self.n_points_temp,
+            self.noiselvl_temp,self.T_max_temp,self.T_min_temp,
+            self.label_9,self.label_10,self.label_11,
+            self.label_35,self.label_36,self.label_12,
+            self.label_13,self.label_14,self.label_37,
+            self.label_38,self.t_label_hydr,self.val_label_hydr,
+            self.n_out_hydr,self.n_points_hydr,self.noiselvl_hydr,
+            self.T_min_hydr,self.T_max_hydr,self.T_interval_hydr,
+            self.Val_interval_hydr,self.base_i,self.drop_val,
+            self.n_points_bl,self.n_out_bl,self.noiselvl_bl,
+            self.T_interval_bl,self.Val_interval_bl,self.T_max_bl,
+            self.T_min_bl,self.label_15,self.label_16,self.label_17,
+            self.label_39,self.label_40,self.label_41,self.label_42,
+            self.t_label_bl,self.val_label_bl
         ]
         for widget in hiddenWidgets:
             widget.setVisible(not is_visible)
         for widget in unHiddenWidgets:
             widget.setVisible(is_visible)
-
-
-
-
-
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
