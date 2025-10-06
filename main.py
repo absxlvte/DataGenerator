@@ -390,68 +390,78 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
     def toggle_interpolation_fields(self, state):
         is_visible = state == QtCore.Qt.Checked
 
-        self.T_interval.setVisible(is_visible)
-        self.Val_interval.setVisible(is_visible)
-        self.T_interval_temp.setVisible(is_visible)
-        self.Val_interval_temp.setVisible(is_visible)
-        self.label_33.setVisible(is_visible)
-        self.label_34.setVisible(is_visible)
-        self.t_label_temp.setVisible(is_visible)
-        self.val_label_temp.setVisible(is_visible)
-        self.n_out_temp.setVisible(is_visible)
-        self.n_points_temp.setVisible(is_visible)
-        self.noiselvl_temp.setVisible(is_visible)
-        self.T_max_temp.setVisible(is_visible)
-        self.T_min_temp.setVisible(is_visible)
-        self.label_9.setVisible(is_visible)
-        self.label_10.setVisible(is_visible)
-        self.label_11.setVisible(is_visible)
-        self.label_35.setVisible(is_visible)
-        self.label_36.setVisible(is_visible)
-        self.label_12.setVisible(is_visible)
-        self.label_13.setVisible(is_visible)
-        self.label_14.setVisible(is_visible)
-        self.label_37.setVisible(is_visible)
-        self.label_38.setVisible(is_visible)
-        self.t_label_hydr.setVisible(is_visible)
-        self.val_label_hydr.setVisible(is_visible)
-        self.n_out_hydr.setVisible(is_visible)
-        self.n_points_hydr.setVisible(is_visible)
-        self.noiselvl_hydr.setVisible(is_visible)
-        self.T_min_hydr.setVisible(is_visible)
-        self.T_max_hydr.setVisible(is_visible)
-        self.T_interval_hydr.setVisible(is_visible)
-        self.Val_interval_hydr.setVisible(is_visible)
-        self.base_i.setVisible(is_visible)
-        self.drop_val.setVisible(is_visible)
-        self.n_points_bl.setVisible(is_visible)
-        self.n_out_bl.setVisible(is_visible)
-        self.noiselvl_bl.setVisible(is_visible)
-        self.T_interval_bl.setVisible(is_visible)
-        self.Val_interval_bl.setVisible(is_visible)
-        self.T_max_bl.setVisible(is_visible)
-        self.T_min_bl.setVisible(is_visible)
-        self.label_15.setVisible(is_visible)
-        self.label_16.setVisible(is_visible)
-        self.label_17.setVisible(is_visible)
-        self.label_39.setVisible(is_visible)
-        self.label_40.setVisible(is_visible)
-        self.label_41.setVisible(is_visible)
-        self.label_42.setVisible(is_visible)
-        self.t_label_bl.setVisible(is_visible)
-        self.val_label_bl.setVisible(is_visible)
+        hiddenWidgets= [
+            self.Amp,
+            self.Freq,
+            self.Phase,
+            self.Offset,
+            self.label_2,
+            self.label_3,
+            self.label_4,
+            self.label_5,
+            self.button_setDefault,
+        ]
+        unHiddenWidgets = [
+            self.T_interval,
+            self.Val_interval,
+            self.T_interval_temp,
+            self.Val_interval_temp,
+            self.label_33,
+            self.label_34,
+            self.t_label_temp,
+            self.val_label_temp,
+            self.n_out_temp,
+            self.n_points_temp,
+            self.noiselvl_temp,
+            self.T_max_temp,
+            self.T_min_temp,
+            self.label_9,
+            self.label_10,
+            self.label_11,
+            self.label_35,
+            self.label_36,
+            self.label_12,
+            self.label_13,
+            self.label_14,
+            self.label_37,
+            self.label_38,
+            self.t_label_hydr,
+            self.val_label_hydr,
+            self.n_out_hydr,
+            self.n_points_hydr,
+            self.noiselvl_hydr,
+            self.T_min_hydr,
+            self.T_max_hydr,
+            self.T_interval_hydr,
+            self.Val_interval_hydr,
+            self.base_i,
+            self.drop_val,
+            self.n_points_bl,
+            self.n_out_bl,
+            self.noiselvl_bl,
+            self.T_interval_bl,
+            self.Val_interval_bl,
+            self.T_max_bl,
+            self.T_min_bl,
+            self.label_15,
+            self.label_16,
+            self.label_17,
+            self.label_39,
+            self.label_40,
+            self.label_41,
+            self.label_42,
+            self.t_label_bl,
+            self.val_label_bl
+        ]
+        for widget in hiddenWidgets:
+            widget.setVisible(not is_visible)
+        for widget in unHiddenWidgets:
+            widget.setVisible(is_visible)
 
 
-        self.Amp.setVisible(not is_visible)
-        self.Freq.setVisible(not is_visible)
-        self.Phase.setVisible(not is_visible)
-        self.Offset.setVisible(not is_visible)
-        self.label_2.setVisible(not is_visible)
-        self.label_3.setVisible(not is_visible)
-        self.label_4.setVisible(not is_visible)
-        self.label_5.setVisible(not is_visible)
 
-        self.button_setDefault.setVisible(not is_visible)
+
+
 
 
 if __name__ == '__main__':
