@@ -174,6 +174,26 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 params_widget = {
                     'points': self.GlukozaPoints
                 }
+            case 'Капнограф':
+                params_widget = {
+                    'n_outliers': self.n_out_capn,
+                    'points': self.Points_cap,
+                    'noise_level': self.noiselvl_capn,
+                    'T_interval': self.T_interval_cap,
+                    'Val_interval': self.Val_interval_cap,
+                    't_min': self.T_min_cap,
+                    't_max': self.T_max_cap
+                }
+            case 'Датчик проводимости':
+                params_widget = {
+                    'n_outliers': self.n_out_cond,
+                    'points': self.Points_cond,
+                    'noise_level': self.noiselvl_cond,
+                    'T_interval': self.T_interval_cond,
+                    'Val_interval': self.Val_interval_cond,
+                    't_min': self.T_min_cond,
+                    't_max': self.T_max_cond
+                }
         params, errors = self.validate_inputs(params_widget)
         if errors:
             QtWidgets.QMessageBox.warning(self, "Ошибка ввода!","\n".join(errors))

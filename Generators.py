@@ -39,7 +39,9 @@ class GeneratorManager:
             'Датчик артериального давления': BloodPressureSensor(),
             'Датчик расхода': ConsSensor(),
             'Датчик нитратов': NitrateSensor(),
-            'Датчик глюкозы': GlucozeSensor()
+            'Датчик глюкозы': GlucozeSensor(),
+            'Капнограф': Capnograph(),
+            'Датчик проводимости': ConductivitySensor()
         }
         self.current_generator = None
     def set_generator(self,name):
@@ -884,4 +886,169 @@ class GlucozeSensor(DataGenerator):
             ax.clear()
             ax.plot(self.time,self.val)
             ax.set_title(f"{self.__class__.__name__} Data")
+            return ax
+class Capnograph(DataGenerator):
+    def __init__(self):
+        super().__init__()
+        self.data = None
+        self.params = {
+            'n_outliers': 5,
+            'strength': 1.5,
+            'noise_level': 0.01,
+            'points': 1000,
+            'z_min': 0,
+            'z_max': 1023,
+            't_min': 0.0,
+            't_max': 10.0,
+            'N': 10,
+            'T_interval': None,
+            'Val_interval': None
+        }
+        self.def_params = {
+            'n_outliers': 5,
+            'noise_level': 0.05,
+            'points': 1000,
+            't_min': 0.0,
+            't_max': 10.0,
+            'T_interval': [-1],
+            'Val_interval': [-1]
+        }
+        self.signal = None
+        self.time = None
+
+    def configurate(self, n_outliers=None, noise_level=None, points=None, t_min=None, t_max=None, T_interval=None, Val_interval=None):
+        if n_outliers is not None: self.params['n_outliers'] = n_outliers
+        if noise_level is not None: self.params['noise_level'] = noise_level
+        if points is not None: self.params['points'] = points
+        if t_min is not None: self.params['t_min'] = t_min
+        if t_max is not None: self.params['t_max'] = t_max
+        if T_interval is not None: self.params['T_interval'] = T_interval
+        if Val_interval is not None: self.params['Val_interval'] = Val_interval
+
+    def generate(self):
+        if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
+                self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
+            if len(self.params['T_interval']) != len(self.params['Val_interval']):
+                raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
+            self.data, self.time = create_dynamix(np.array(self.params['T_interval']),
+                                                  np.array(self.params['Val_interval']), self.params['t_min'],
+                                                  self.params['t_max'], self.params['points'])
+            self.add_outliers(self.params['n_outliers'], self.params['strength'])
+            self.add_noise(self.params['noise_level'])
+            self.normalize(self.params['z_min'], self.params['z_max'])
+            self.data = self.data.astype(int)
+
+    def normalize(self, min_val, max_val):
+        current_min = np.min(self.data)
+        current_max = np.max(self.data)
+        current_min_base = np.min(self.params['Val_interval'])
+        current_max_base = np.max(self.params['Val_interval'])
+        self.data = min_val + (self.data - current_min) * (max_val - min_val) / (current_max - current_min)
+        self.signal = min_val + (self.params['Val_interval'] - current_min_base) * (max_val - min_val) / (
+                    current_max_base - current_min_base)
+
+    def add_outliers(self, n_outliers, strength):
+        indices = np.random.choice(len(self.time), n_outliers, replace=False)
+        direction = np.random.choice([-1, 1], n_outliers)
+        outlier_values = strength * np.max(np.abs(self.data)) * direction
+        self.data[indices] += outlier_values
+
+    def add_noise(self, noise_level):
+        noise = noise_level * np.max(np.abs(self.data)) * np.random.normal(size=len(self.time))
+        self.data += noise
+
+    def plot(self, ax):
+        if self.data is not None:
+            ax.clear()
+            ax.set_title(f"{self.__class__.__name__} Data")
+            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.params['T_interval'],
+                    self.signal,
+                    'rx')
+            ax.plot(self.params['T_interval'], self.signal, 'r--', linewidth=1, alpha=0.7)
+            ax.set_ylim(0, 1023)
+            ax.grid(True)
+            return ax
+
+class ConductivitySensor(DataGenerator):
+    def __init__(self):
+        super().__init__()
+        self.data = None
+        self.params = {
+            'n_outliers': 5,
+            'strength': 1.5,
+            'noise_level': 0.01,
+            'points': 1000,
+            'z_min': 0,
+            'z_max': 65535,
+            't_min': 0.0,
+            't_max': 10.0,
+            'N': 16,
+            'T_interval': None,
+            'Val_interval': None
+        }
+        self.def_params = {
+            'n_outliers': 5,
+            'noise_level': 0.05,
+            'points': 1000,
+            't_min': 0.0,
+            't_max': 10.0,
+            'T_interval': [-1],
+            'Val_interval': [-1]
+        }
+        self.signal = None
+        self.time = None
+
+    def configurate(self, n_outliers=None, noise_level=None, points=None, t_min=None, t_max=None, T_interval=None, Val_interval=None):
+        if n_outliers is not None: self.params['n_outliers'] = n_outliers
+        if noise_level is not None: self.params['noise_level'] = noise_level
+        if points is not None: self.params['points'] = points
+        if t_min is not None: self.params['t_min'] = t_min
+        if t_max is not None: self.params['t_max'] = t_max
+        if T_interval is not None: self.params['T_interval'] = T_interval
+        if Val_interval is not None: self.params['Val_interval'] = Val_interval
+
+    def generate(self):
+        if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
+                self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
+            if len(self.params['T_interval']) != len(self.params['Val_interval']):
+                raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
+            self.data, self.time = create_dynamix(np.array(self.params['T_interval']),
+                                                  np.array(self.params['Val_interval']), self.params['t_min'],
+                                                  self.params['t_max'], self.params['points'])
+            self.add_outliers(self.params['n_outliers'], self.params['strength'])
+            self.add_noise(self.params['noise_level'])
+            self.normalize(self.params['z_min'], self.params['z_max'])
+            self.data = self.data.astype(int)
+
+    def normalize(self, min_val, max_val):
+        current_min = np.min(self.data)
+        current_max = np.max(self.data)
+        current_min_base = np.min(self.params['Val_interval'])
+        current_max_base = np.max(self.params['Val_interval'])
+        self.data = min_val + (self.data - current_min) * (max_val - min_val) / (current_max - current_min)
+        self.signal = min_val + (self.params['Val_interval'] - current_min_base) * (max_val - min_val) / (
+                    current_max_base - current_min_base)
+
+    def add_outliers(self, n_outliers, strength):
+        indices = np.random.choice(len(self.time), n_outliers, replace=False)
+        direction = np.random.choice([-1, 1], n_outliers)
+        outlier_values = strength * np.max(np.abs(self.data)) * direction
+        self.data[indices] += outlier_values
+
+    def add_noise(self, noise_level):
+        noise = noise_level * np.max(np.abs(self.data)) * np.random.normal(size=len(self.time))
+        self.data += noise
+
+    def plot(self, ax):
+        if self.data is not None:
+            ax.clear()
+            ax.set_title(f"{self.__class__.__name__} Data")
+            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.params['T_interval'],
+                    self.signal,
+                    'rx')
+            ax.plot(self.params['T_interval'], self.signal, 'r--', linewidth=1, alpha=0.7)
+            ax.set_ylim(0, 65535)
+            ax.grid(True)
             return ax
