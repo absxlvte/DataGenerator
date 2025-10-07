@@ -6,6 +6,76 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.signal import find_peaks
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def generate_geiger_data(time_points, frequency_values, total_time=60, sampling_rate=1000, k=1.0):
+    """
+    Генерация данных гегер-счетчика с динамической частотой
+    Args:
+        time_points: моменты времени изменения частоты [0, 15, 30, 45, 60]
+        frequency_values: значения частоты в эти моменты [1, 0.2, 0.8, 0, 0]
+        total_time: общее время измерения (сек)
+        sampling_rate: частота дискретизации (Гц)
+        k: коэффициент масштабирования частоты
+    """
+    time_array_freq = np.linspace(0, total_time, int(total_time) + 1)
+    freq_values,time_array_freq = create_dynamix(time_points, frequency_values * k, 0, total_time,int(total_time) + 1)
+    def get_freq(t):
+        idx = np.abs(time_array_freq - t).argmin()
+        return freq_values[idx]
+    n_samples = int(total_time * sampling_rate)
+    time_array_sensor = np.linspace(0, total_time, n_samples)
+    freqs = np.array([get_freq(t) for t in time_array_sensor])
+    freqs = np.clip(freqs, 0, sampling_rate / 2)
+    dt = 1.0 / sampling_rate
+    probability = freqs * dt
+    binary_array = np.random.random(n_samples) < probability
+    return time_array_sensor, binary_array.astype(int), time_array_freq, freq_values
+
+
+t_sensor, binary, t_freq, freq_values = generate_geiger_data(
+    time_points=np.array([0, 15, 30, 45, 60]),
+    frequency_values=np.array([1, 0.2, 0.8, 0.5, 0]),
+    total_time=60,
+    sampling_rate=1000,
+    k=10
+)
+print(f'Число точек: {len(binary)}')
+plt.figure(figsize=(12, 6))
+plt.plot(t_sensor, binary, alpha=0.5, label='Бинарный массив')
+plt.plot(t_freq, freq_values / 10, 'r-', linewidth=2, label='Нормированная частота (k=10)')
+plt.xlabel('Время (с)')
+plt.ylabel('События / Частота')
+plt.legend()
+plt.title('Гегер-счетчик с динамической частотой')
+plt.show()
+
+
+'''
+k = 10
+values, time = create_dynamix(np.array([0, 15, 30, 45, 60]), np.array([1, 0.2, 0.8, 0, 0])*k, 0, 60, 60)
+
+def getFreq(t):
+    idx = np.abs(time - t).argmin()
+    return values[idx]
+
+def geigerSensor(freq_func, time=60, sampling_rate=1000):
+    n_samples = int(time*sampling_rate)
+    time_array = np.linspace(0,time,n_samples)
+    freqs = np.array([freq_func(t) for t in time_array])
+    freqs = np.clip(freqs,0,sampling_rate/2)
+    dt = 1.0 / sampling_rate  # длительность одного шага
+    probability = freqs * dt  # эквивалентно freqs/sampling_rate
+    binaryArray = np.random.random(n_samples)<probability
+    return time_array,binaryArray.astype(int)
+
+t, v = geigerSensor(getFreq)
+print(f'число точек: {len(v)}')
+plt.figure()
+plt.plot(t,v, time, values/k)
+plt.show()'''
 '''
 def is_non_decreasing(arr):
     return np.all(np.diff(arr) > 0)
