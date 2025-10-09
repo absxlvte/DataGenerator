@@ -36,8 +36,8 @@ def generate_geiger_data(time_points, frequency_values, total_time=60, sampling_
 
 
 t_sensor, binary, t_freq, freq_values = generate_geiger_data(
-    time_points=np.array([0, 15, 30, 45, 60]),
-    frequency_values=np.array([1, 0.2, 0.8, 0.5, 0]),
+    time_points=np.array([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]),
+    frequency_values=np.array([1, 0.2, 0.8, 0.5, 0.1, 0.1, 1, 0.5, 0.7, 0.4, 1, 0.5, 0]),
     total_time=60,
     sampling_rate=1000,
     k=10

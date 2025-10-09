@@ -165,3 +165,27 @@ def createGlucoza(a: float=0.7,points: int=1000):
     #plt.plot(t,final_c)
     plt.show()'''
     return array,final_c,t
+
+def generate_geiger_data(time_points, frequency_values, total_time=60, sampling_rate=1000, k=1.0):
+    """
+    Генерация данных гегер-счетчика с динамической частотой
+    Args:
+        time_points: моменты времени изменения частоты [0, 15, 30, 45, 60]
+        frequency_values: значения частоты в эти моменты [1, 0.2, 0.8, 0, 0]
+        total_time: общее время измерения (сек)
+        sampling_rate: частота дискретизации (Гц)
+        k: коэффициент масштабирования частоты
+    """
+    time_array_freq = np.linspace(0, total_time, int(total_time) + 1)
+    freq_values,time_array_freq = create_dynamix(time_points, frequency_values * k, 0, total_time,int(total_time) + 1)
+    def get_freq(t):
+        idx = np.abs(time_array_freq - t).argmin()
+        return freq_values[idx]
+    n_samples = int(total_time * sampling_rate)
+    time_array_sensor = np.linspace(0, total_time, n_samples)
+    freqs = np.array([get_freq(t) for t in time_array_sensor])
+    freqs = np.clip(freqs, 0, sampling_rate / 2)
+    dt = 1.0 / sampling_rate
+    probability = freqs * dt
+    binary_array = np.random.random(n_samples) < probability
+    return time_array_sensor, binary_array.astype(int), time_array_freq, freq_values

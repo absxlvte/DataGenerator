@@ -165,7 +165,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>10</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1331,11 +1331,11 @@
      </widget>
     </widget>
     <widget class="QWidget" name="geiger">
-     <widget class="QTextEdit" name="n_points_10">
+     <widget class="QTextEdit" name="n_points_geig">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>150</y>
+        <x>170</x>
+        <y>70</y>
         <width>161</width>
         <height>41</height>
        </rect>
@@ -1347,14 +1347,79 @@
      <widget class="QLabel" name="label_29">
       <property name="geometry">
        <rect>
-        <x>150</x>
-        <y>100</y>
-        <width>311</width>
+        <x>20</x>
+        <y>70</y>
+        <width>151</width>
         <height>41</height>
        </rect>
       </property>
       <property name="text">
-       <string>Время (с)</string>
+       <string>Число точек</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="T_interval_geig">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>180</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="Val_interval_geig">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>240</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="t_label_geig">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>180</y>
+        <width>21</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>t:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Val_label_geig">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>240</y>
+        <width>41</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Val:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Val_label_geig_2">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>290</y>
+        <width>321</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>нормировка строго от 0 до 1</string>
       </property>
      </widget>
     </widget>
