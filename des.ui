@@ -165,7 +165,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>10</number>
+     <number>12</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1478,7 +1478,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="pagecins">
-     <widget class="QTextEdit" name="n_points_11">
+     <widget class="QTextEdit" name="n_points_cons">
       <property name="geometry">
        <rect>
         <x>130</x>
@@ -1502,6 +1502,71 @@
       </property>
       <property name="text">
        <string>Число точек</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="t_interval_cons">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>250</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="Val_interval_cons">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>310</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Val_label_geig_3">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>360</y>
+        <width>341</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>нормировка строго от 0 до 1</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="t_label_cons">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>250</y>
+        <width>21</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>t:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Val_label_cons">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>310</y>
+        <width>41</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Val:</string>
       </property>
      </widget>
     </widget>

@@ -815,24 +815,53 @@ class ConsSensor(DataGenerator):
         super().__init__()
         self.data = None
         self.params = {
-            'points': 100
+            'points': 100,
+            'T_interval': None,
+            'Val_interval': None
         }
         self.def_params = {
-            'points': 100
+            'points': 100,
+            'T_interval': [-1],
+            'Val_interval': [-1]
         }
         self.signal = None
         self.time = None
-    def configurate(self,points):
+    def configurate(self,points=None, T_interval=None, Val_interval=None):
         if points is not None: self.params['points'] = points
+        if T_interval is not None: self.params['T_interval'] = T_interval
+        if Val_interval is not None: self.params['Val_interval'] = Val_interval
 
     def generate(self):
-        p = np.random.randint(0, 100)/100
-        arr = np.random.choice([0, 1], size=self.params['points'], p=[1 - p, p])
-        self.data = arr
-    def plot(self,ax):
+        if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
+                self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
+            if len(self.params['T_interval']) != len(self.params['Val_interval']):
+                raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
+            # interp
+            t_sensor, binary, t_freq, freq_values = generate_geiger_data(
+                time_points=np.array(self.params['T_interval']),
+                frequency_values=np.array(self.params['Val_interval']),
+                total_time=60,
+                sampling_rate=1000,
+                k=10
+            )
+            self.data = binary
+            self.time = t_sensor
+            self.signal = dict(zip(t_freq, freq_values / 10))
+        else:
+            # random
+            p = np.random.randint(0, 95) / 100
+            arr = np.random.choice([0, 1], size=self.params['points'], p=[1 - p, p])
+            self.data = arr
+            self.time = np.linspace(0, 60, self.params['points'])
+
+    def plot(self, ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.data)
+            if self.signal is None:
+                ax.plot(self.time, self.data)
+            else:
+                ax.plot(self.time, self.data, alpha=0.5)
+                ax.plot(*zip(*self.signal.items()), 'r-')
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
 
