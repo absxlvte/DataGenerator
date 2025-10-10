@@ -189,3 +189,16 @@ def generate_geiger_data(time_points, frequency_values, total_time=60, sampling_
     probability = freqs * dt
     binary_array = np.random.random(n_samples) < probability
     return time_array_sensor, binary_array.astype(int), time_array_freq, freq_values
+def scale_signal(signal, target_min, target_max, offset=0):
+    signal = np.array(signal, dtype=float)
+    current_min = np.min(signal)
+    current_max = np.max(signal)
+    current_amplitude = current_max - current_min
+    target_amplitude = target_max - target_min
+    if current_amplitude == 0:
+        return np.full_like(signal, (target_min + target_max) / 2 + offset)
+    current_center = (current_max + current_min) / 2
+    target_center = (target_max + target_min) / 2
+    scaled = (signal - current_center) * (target_amplitude / current_amplitude) + target_center
+    scaled += offset
+    return scaled

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import neurokit2 as nk
 import numpy as np
 import matplotlib.pyplot as plt
 from fontTools.merge.util import first
@@ -504,12 +505,15 @@ class HeartRateSensor(DataGenerator):
         if amp is not None: self.params['amp'] = amp
 
     def generate(self):
-        self.time = np.linspace(0,60,self.params['points'])
-        heart_rate_hz = self.params['HeartRate'] / 60
-        f = heart_rate_hz
-        V = self.params['amp'] * np.sin(2 * np.pi * f * self.time) + self.params['baseV']
-        self.data = V
-        self.signal = V
+        ecg_signal = nk.ecg_simulate(
+            duration=6,
+            heart_rate=self.params['HeartRate'],
+            sampling_rate=1000,
+            noise=0.1
+        )
+        ecg_signal = ecg_signal[100:]
+        self.data = scale_signal(ecg_signal, 0.1, 3)
+        self.time = np.linspace(1,5,5900)
 
     def plot(self, ax):
         if self.data is not None:
@@ -518,8 +522,6 @@ class HeartRateSensor(DataGenerator):
             ax.set_title(f"{self.__class__.__name__} Data")
             ax.set_xlabel("Время (с)")
             ax.set_ylabel("Напряжение (В)")
-            ax.set_ylim(0, 3)
-            ax.set_xlim(0,10)
             return ax
 
 class pHSensor(DataGenerator):
