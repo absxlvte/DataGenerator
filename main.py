@@ -126,10 +126,9 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 }
             case 'Датчик ЧСС':
                 params_widget = {
-                    'points': self.n_points_5,
+                    'duration': self.hr_duration,
                     'HeartRate': self.heartRate,
-                    'baseV': self.baseV,
-                    'amp': self.ampV
+                    'noise_lvl': self.hr_boise_lvl,
                 }
             case 'Датчик pH':
                 params_widget = {
@@ -222,7 +221,8 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             'SpO2',
             'HeartRate',
             'num_sens',
-            'time_step'
+            'time_step',
+            'duration'
         ]
         splitting_params = [
             'T_interval',

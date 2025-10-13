@@ -485,36 +485,33 @@ class HeartRateSensor(DataGenerator):
         super().__init__()
         self.data = None
         self.params = {
-            'points':1000,
+            'duration':6,
             'HeartRate':80,
-            'baseV': 1.0,
-            'amp':0.7
+            'noise_lvl': 0.1,
         }
         self.def_params = {
-            'points': 1000,
-            'HeartRate': 80,
-            'baseV': 1.0,
-            'amp': 0.7
+            'duration':6,
+            'HeartRate':80,
+            'noise_lvl': 0.1,
         }
         self.signal = None
         self.time = None
-    def configurate(self, points,HeartRate,baseV,amp):
-        if points is not None: self.params['points'] = points
+    def configurate(self, duration,HeartRate,noise_lvl):
+        if duration is not None: self.params['duration'] = duration
         if HeartRate is not None: self.params['HeartRate'] = HeartRate
-        if baseV is not None: self.params['baseV'] = baseV
-        if amp is not None: self.params['amp'] = amp
+        if noise_lvl is not None: self.params['noise_lvl'] = noise_lvl
 
     def generate(self):
         ecg_signal = nk.ecg_simulate(
-            duration=6,
+            duration=self.params['duration'],
             heart_rate=self.params['HeartRate'],
             sampling_rate=1000,
-            noise=0.1
+            noise=self.params['noise_lvl']
         )
-        ecg_signal = ecg_signal[120:]
-        print(len(ecg_signal))
+        ecg_signal = ecg_signal[100:]
+        time = np.linspace(1,5,1000*self.params['duration'])[100:]
         self.data = scale_signal(ecg_signal, 0.1, 3)
-        self.time = np.linspace(1,5,5880)
+        self.time = time
 
     def plot(self, ax):
         if self.data is not None:
