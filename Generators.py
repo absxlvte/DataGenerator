@@ -511,9 +511,10 @@ class HeartRateSensor(DataGenerator):
             sampling_rate=1000,
             noise=0.1
         )
-        ecg_signal = ecg_signal[100:]
+        ecg_signal = ecg_signal[120:]
+        print(len(ecg_signal))
         self.data = scale_signal(ecg_signal, 0.1, 3)
-        self.time = np.linspace(1,5,5900)
+        self.time = np.linspace(1,5,5880)
 
     def plot(self, ax):
         if self.data is not None:
