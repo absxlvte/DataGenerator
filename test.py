@@ -1,3 +1,5 @@
+from random import randint
+
 from func import *
 import random
 from scipy.integrate import trapezoid
@@ -6,30 +8,29 @@ from scipy.signal import find_peaks
 import numpy as np
 import matplotlib.pyplot as plt
 import neurokit2 as nk
-"""
-time = np.array([0,5,20,60,70,80,90,100])
-value = np.array([0,4,3,0,0,1,2,0])
+
+time = np.array([0,5,10,15,25,40,45,50,55,60,70,90,95,100])
+value = np.array([0,7,4,5,0,0,2,2,3,1,1,5,5,0])
 points = 100
 time_step = 1
 d = 0.1
 vliq = 1.400
+noise = 0.01
 t_liq = d/vliq
 delta_t, time = create_dynamix(time,value,0,points*time_step,points)
-delta_t = scale_signal(delta_t,0,1)
-T_send = time + t_liq
-T_recv = T_send + delta_t# + t_liq
-
-print(*[f"{x:.6f}" for x in T_send])
-print("------")
-print(*[f"{x:.6f}" for x in T_recv])
-print("------")
-print(*[f"{x:.6f}" for x in delta_t])
+delta_t = scale_signal(delta_t,t_liq,1)
+T_send = time + t_liq * np.random.uniform(1.0, 1.5, size=len(time)) + noise * np.random.normal(size=len(time)) * np.max(np.abs(time))
+T_recv = T_send + delta_t
+state = [t>1.1*t_liq for t in delta_t]
+T_send, T_recv, state, delt_v, time_new = bubbleCreate()
 
 plt.figure()
-plt.plot(T_send,T_recv-T_send, T_send, t_liq*np.ones(len(time)))
+plt.plot(state)
+plt.plot(delt_v)
 plt.show()
-"""
-with open("C:/Users/Zotin/Desktop/work/_Current tasks/Generator/GeneratedVal/120_70.txt", "r") as file:
+#======================================
+
+"""with open("C:/Users/Zotin/Desktop/work/_Current tasks/Generator/GeneratedVal/120_70.txt", "r") as file:
     data = file.read()
 Vref = 6
 N = 12
@@ -44,7 +45,7 @@ verh,niz =  4.45, 3.37
 syst = k1 * verh
 diast = k2 * niz
 print(f"систолическое- {syst}; диастолическое- {diast}")
-
+"""
 
 """A = 110
 B = 25

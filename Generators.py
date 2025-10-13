@@ -642,50 +642,41 @@ class BubbleSensor(DataGenerator):
         self.data = None
         self.Trecv = None
         self.Tsend = None
-        self.delt = None
         self.delt_v = None
+        self.state = None
         self.params = {
-            'points': 1000,
+            'points': 100,
             'd': 0.1,
-            'Vliq': 1400,
+            'Vliq': 1.400,
             'time_step': 1
         }
         self.def_params = {
-            'points': 1000,
+            'points': 100,
             'time_step': 1
         }
         self.signal = None
         self.time = None
-    def configurate(self, points,time_step):
+    def configurate(self,points,time_step):
         if points is not None: self.params['points'] = points
         if time_step is not None: self.params['time_step'] = time_step
     def generate(self):
-        self.time = np.arange(0, self.params['points'] * self.params['time_step'], self.params['time_step'])
-        tliq = self.params['d']/self.params['Vliq']
-        Tsend = self.time
-        periodic_variation = (tliq+0.00002) * np.sin(2 * np.pi * Tsend/(2*self.params['points']))
-
-        delta_t = np.random.uniform(0.1*tliq, 0.2*tliq, size=Tsend.shape)
-        delta_t += periodic_variation
-        Trecv = Tsend + delta_t
-        delta_t_values = Trecv - Tsend
-        self.delt = delta_t_values
-        delta_t_values = np.where(delta_t_values<tliq,0,np.max(delta_t_values))
-        self.delt_v = delta_t_values
-        self.Trecv = Trecv
-        self.Tsend = Tsend
-        self.data = [Tsend,Trecv]
+        self.Tsend, self.Trecv, self.state, self.delt_v, time_new = bubbleCreate(
+            points=self.params['points'],
+            d=self.params['d'],
+            time_step=self.params['time_step'],
+            vliq = self.params['Vliq']
+        )
 
     def plot(self,ax):
         if (self.Trecv is not None) and (self.Tsend is not None):
             ax.clear()
-            #ax.plot(self.Trecv,label='Rx')
-            #ax.plot(self.Tsend,label='Tx')
-            ax.plot(self.delt_v,label='bubbles')
-            ax.plot(self.delt,label='Tx-Rx')
-            ax.plot(np.ones_like(self.Tsend)*self.params['d']/self.params['Vliq'],label='Tliq')
+            ax.plot(self.delt_v)
+            ax.plot((self.params['d']/self.params['Vliq'])*np.ones_like(self.delt_v))
+            ax.plot(self.state)
             ax.set_title(f"{self.__class__.__name__} Data")
-            ax.legend(loc='best')
+            """plt.figure()
+            plt.plot(self.delt_v)
+            plt.show()"""
             return ax
 
 class GeigerSensor(DataGenerator):
