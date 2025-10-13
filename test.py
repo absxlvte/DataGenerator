@@ -9,28 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import neurokit2 as nk
 
-time = np.array([0,5,10,15,25,40,45,50,55,60,70,90,95,100])
-value = np.array([0,7,4,5,0,0,2,2,3,1,1,5,5,0])
-points = 100
-time_step = 1
-d = 0.1
-vliq = 1.400
-noise = 0.01
-t_liq = d/vliq
-delta_t, time = create_dynamix(time,value,0,points*time_step,points)
-delta_t = scale_signal(delta_t,t_liq,1)
-T_send = time + t_liq * np.random.uniform(1.0, 1.5, size=len(time)) + noise * np.random.normal(size=len(time)) * np.max(np.abs(time))
-T_recv = T_send + delta_t
-state = [t>1.1*t_liq for t in delta_t]
-T_send, T_recv, state, delt_v, time_new = bubbleCreate()
 
-plt.figure()
-plt.plot(state)
-plt.plot(delt_v)
-plt.show()
-#======================================
-
-"""with open("C:/Users/Zotin/Desktop/work/_Current tasks/Generator/GeneratedVal/120_70.txt", "r") as file:
+with open("C:/Users/Zotin/Desktop/work/_Current tasks/Generator/GeneratedVal/120_70.txt", "r") as file:
     data = file.read()
 Vref = 6
 N = 12
@@ -41,11 +21,12 @@ data = [item*Vref/(2**N) for item in data]
 t = np.arange(len(data))
 peaks, properties = find_peaks(data, distance=20)
 peaks_dict = {t[index]:data[index] for index in peaks}
-verh,niz =  4.45, 3.37
+verh,niz =  3.98, 2.79
 syst = k1 * verh
 diast = k2 * niz
 print(f"систолическое- {syst}; диастолическое- {diast}")
-"""
+plt.plot(data)
+plt.show()
 
 """A = 110
 B = 25

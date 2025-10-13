@@ -782,12 +782,25 @@ class BloodPressureSensor(DataGenerator):
         troughs, _ = find_peaks(-filtered_pressure)
         valid_peaks = peaks[(filtered_pressure[peaks] >= start_pressure) & (filtered_pressure[peaks] <= end_pressure)]
         valid_troughs = troughs[(filtered_pressure[troughs] >= start_pressure) & (filtered_pressure[troughs] <= end_pressure)]
-        systolic_pressure = filtered_pressure[valid_peaks].max() if len(valid_peaks) > 0 else None
-        diastolic_pressure = filtered_pressure[valid_troughs].min() if len(valid_troughs) > 0 else None
+        systolic_pressure = 0
+        diastolic_pressure = 0
         Z = [int(self.V_to_Z(value)) for value in filtered_pressure]
         self.data = Z
-        print(systolic_pressure*self.params['k1'])
-        print(diastolic_pressure*self.params['k2'])
+        delta = 50
+        val1,val2 = 0, 0
+        dZ = np.gradient(Z)
+        for i in range(0,len(Z)-1,1):
+            if abs(dZ[i+1]-dZ[i])>delta:
+                systolic_pressure = z_in_v(Z[i], self.params['N'], self.params['Vref'])
+                val1 = i
+                break
+        for i in range(len(Z)-1, 0, -1):
+            if abs(dZ[i-1]-dZ[i])>delta:
+                diastolic_pressure = z_in_v(Z[i], self.params['N'], self.params['Vref'])
+                val2 = i
+                break
+        print(f"syst: {systolic_pressure * self.params['k1']}")
+        print(f"diast: {diastolic_pressure*self.params['k2']}")
     def V_to_Z(self,v):
         return 2**self.params['N']*v/self.params['Vref']
     def plot(self,ax):
