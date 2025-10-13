@@ -410,7 +410,7 @@ class PPGSensor(DataGenerator):
         R = (ac940second/np.mean(self.data_660))/(ac660first/np.mean(self.data_940))
         print(f"R* = {R}")
         self.result = self.params['A']-self.params['B']*R
-
+        self.data = np.column_stack((self.data_660,self.data_940)) #1st col - 660 2nd col - 940
         '''self.time = np.linspace(0, 5, self.params['points'])
         DC_660 = self.U_to_Z(1)
         DС_940 = ((self.params['A']-self.params['SpO2'])*self.U_to_Z(0.45))/(self.params['B']*(self.U_to_Z(0.55)/DC_660))
@@ -747,7 +747,7 @@ class BloodPressureSensor(DataGenerator):
         self.data = None
         self.params = {
             'duration': 10,
-            'duration': 100,
+            'sampling_rate': 100,
             'SBP': 120,
             'DBP': 80,
             'Vref': 6.0,
@@ -765,42 +765,38 @@ class BloodPressureSensor(DataGenerator):
         if SBP is not None: self.params['SBP'] = SBP
         if DBP is not None: self.params['DBP'] = DBP
     def generate(self):
-        start_pressure = self.params['DBP']/self.params['k2']
-        end_pressure = self.params['SBP']/self.params['k1']
+        start_pressure = self.params['DBP'] / self.params['k2']
+        end_pressure = self.params['SBP'] / self.params['k1']
         initial_pressure = 5.8
         final_pressure = 0.2
         np.random.seed(0)
         duration = self.params['duration']
-        sampling_rate = self.params['duration']
-        time = np.linspace(0, duration, duration * sampling_rate)
-        initial_pressure = 5.8
-        final_pressure = 0.2
-        pressure_drop = np.linspace(initial_pressure, final_pressure, len(time))
+        sampling_rate = self.params['sampling_rate']
+        num_points = int(duration * sampling_rate)
+        time = np.linspace(0, duration, num_points)
+        pressure_drop = np.linspace(initial_pressure, final_pressure, num_points)
         pulse_frequency = 2
         pulse_amplitude = 0.5
         for i in range(len(time)):
-            if pressure_drop[i] >= start_pressure and pressure_drop[i] <= end_pressure:
+            if start_pressure <= pressure_drop[i] <= end_pressure:
                 pressure_drop[i] += pulse_amplitude * np.sin(4 * np.pi * pulse_frequency * time[i])
         noise = np.random.normal(0, 0.02, pressure_drop.shape)
         pressure_drop += noise
-
         Q1 = np.percentile(pressure_drop, 25)
         Q3 = np.percentile(pressure_drop, 75)
         IQR = Q3 - Q1
-        filtered_pressure = pressure_drop[(pressure_drop >= (Q1 - 1.5 * IQR)) & (pressure_drop <= (Q3 + 1.5 * IQR))]
-        deltas = np.diff(filtered_pressure)
+        filter_mask = (pressure_drop >= (Q1 - 1.5 * IQR)) & (pressure_drop <= (Q3 + 1.5 * IQR))
+        filtered_pressure = pressure_drop[filter_mask]
         peaks, _ = find_peaks(filtered_pressure)
         troughs, _ = find_peaks(-filtered_pressure)
         valid_peaks = peaks[(filtered_pressure[peaks] >= start_pressure) & (filtered_pressure[peaks] <= end_pressure)]
-        valid_troughs = troughs[
-            (filtered_pressure[troughs] >= start_pressure) & (filtered_pressure[troughs] <= end_pressure)]
+        valid_troughs = troughs[(filtered_pressure[troughs] >= start_pressure) & (filtered_pressure[troughs] <= end_pressure)]
         systolic_pressure = filtered_pressure[valid_peaks].max() if len(valid_peaks) > 0 else None
         diastolic_pressure = filtered_pressure[valid_troughs].min() if len(valid_troughs) > 0 else None
-        Z = []
-        scaled_pressure = filtered_pressure * 682.7
-        for i in range(len(scaled_pressure)):
-            Z[i] = self.V_to_Z(scaled_pressure[i])
+        Z = [int(self.V_to_Z(value)) for value in filtered_pressure]
         self.data = Z
+        print(systolic_pressure*self.params['k1'])
+        print(diastolic_pressure*self.params['k2'])
     def V_to_Z(self,v):
         return 2**self.params['N']*v/self.params['Vref']
     def plot(self,ax):

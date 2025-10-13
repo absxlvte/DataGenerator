@@ -366,7 +366,8 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             'Гидравлический датчик давления',
             'Датчик наличия крови',
             'Датчик насыщения крови кислородом',
-            'Датчик pH'
+            'Датчик pH',
+            'Датчик артериального давления'
 
         ]
         if self.current_generator_name in int_format:
