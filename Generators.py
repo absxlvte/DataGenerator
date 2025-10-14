@@ -738,7 +738,7 @@ class BloodPressureSensor(DataGenerator):
         self.data = None
         self.params = {
             'duration': 10,
-            'sampling_rate': 100,
+            'sampling_rate': 1000,
             'SBP': 120,
             'DBP': 80,
             'Vref': 6.0,
@@ -766,11 +766,11 @@ class BloodPressureSensor(DataGenerator):
         num_points = int(duration * sampling_rate)
         time = np.linspace(0, duration, num_points)
         pressure_drop = np.linspace(initial_pressure, final_pressure, num_points)
-        pulse_frequency = 2
+        pulse_frequency = 1.8
         pulse_amplitude = 0.5
         for i in range(len(time)):
             if start_pressure <= pressure_drop[i] <= end_pressure:
-                pressure_drop[i] += pulse_amplitude * np.sin(4 * np.pi * pulse_frequency * time[i])
+                pressure_drop[i] += pulse_amplitude * np.sin(2 * np.pi * pulse_frequency * time[i])
         noise = np.random.normal(0, 0.02, pressure_drop.shape)
         pressure_drop += noise
         Q1 = np.percentile(pressure_drop, 25)
