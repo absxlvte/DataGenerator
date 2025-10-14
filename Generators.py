@@ -540,32 +540,38 @@ class pHSensor(DataGenerator):
             'F': 96485,
             'R': 8.314,
             'T_interval': None,
-            'Val_interval': None
+            'Val_interval': None,
+            'noise_lvl': 0.1,
+            'n_outliers': 5
         }
         self.def_params = {
             'points': 1000,
             'duration': 10,
             'T_interval': [-1],
-            'Val_interval': [-1]
+            'Val_interval': [-1],
+            'noise_lvl': 0.1,
+            'n_outliers': 5
             #'time_interv': [3,2,1,2,2],
             #'ph_val': [5,7,14,10,7],
             #'tr_time': 0.1
         }
         self.signal = None
         self.time = None
-    def configurate(self,points,duration, T_interval, Val_interval):
+    def configurate(self,points,duration, T_interval, Val_interval,noise_lvl,n_outliers):
         if points is not None: self.params['points'] = points
         if duration is not None: self.params['duration'] = duration
         if T_interval is not None: self.params['T_interval'] = T_interval
         if Val_interval is not None: self.params['Val_interval'] = Val_interval
+        if n_outliers is not None: self.params['n_outliers'] = n_outliers
+        if noise_lvl is not None: self.params['noise_lvl'] = noise_lvl
     def generate(self):
         if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
                 self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
             if len(self.params['T_interval']) != len(self.params['Val_interval']):
                 raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
             self.data, self.time = create_dynamix(np.array(self.params['T_interval']),np.array(self.params['Val_interval']),0, self.params['duration'],self.params['points'])
-            self.add_noise(0.1)
-            self.add_outliers(5,1)
+            self.add_noise(self.params['noise_lvl'])
+            self.add_outliers(self.params['n_outliers'],1)
             self.data = scale_signal(self.data,v_in_z(self.pH_to_V(0),self.params['N'], self.params['Vref'],bip=True), v_in_z(self.pH_to_V(14),self.params['N'], self.params['Vref'],bip=True))
     def plot(self,ax):
         if self.data is not None:
