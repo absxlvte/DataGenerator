@@ -90,11 +90,11 @@ def create_pulse_wave(Amp=1,t_start=0,t_stop=5,zero_offset=0, points=1000, inver
         V_new = V_new*(-1)
     return t_new,V_new*2*Amp+zero_offset
 
-def v_in_z(V,N,V_ref):
-    return (2**N*V)/V_ref
+def v_in_z(V,N,V_ref,bip=False):
+    return (2**N*V)/V_ref if not bip else (2**N * (V + V_ref)) / (2 * V_ref)
 
-def z_in_v(Z,N,V_ref):
-    return (Z*V_ref)/(2**N)
+def z_in_v(Z,N,V_ref,bip=False):
+    return (Z*V_ref)/(2**N) if not bip else (2 * Z * V_ref) / (2**N) - V_ref
 
 
 def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],

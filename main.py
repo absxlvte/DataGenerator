@@ -132,7 +132,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 }
             case 'Датчик pH':
                 params_widget = {
-
+                    'points': self.n_points_ph,
+                    'duration': self.time_ph,
+                    'T_interval': self.T_interval_ph,
+                    'Val_interval': self.Val_interval_ph
                 }
             case 'Датчик уровня жидкости':
                 params_widget = {
@@ -399,8 +402,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.Amp,self.Freq,self.Phase,
             self.Offset,self.label_2,self.label_3,
             self.label_4,self.label_5,self.button_setDefault,
-            self.label_29, self.n_points_geig, self.n_points_cons,
-            self.label_32
+            self.label_29,self.n_points_geig,self.n_points_cons,
+            self.label_32,self.n_points_ph,self.label_56,
+            self.label_22,self.time_ph,self.T_interval_ph,
+            self.Val_interval_ph,self.t_label_ph,self.Val_label_ph
         ]
         unHiddenWidgets = [
             self.T_interval,self.Val_interval,
@@ -422,7 +427,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.t_label_bl,self.val_label_bl, self.Val_interval_geig,
             self.T_interval_geig, self.t_label_geig,self.Val_label_geig,
             self.Val_label_geig_2, self.Val_label_cons, self.t_interval_cons,
-            self.t_label_cons, self.Val_interval_cons, self.Val_label_geig_3
+            self.t_label_cons, self.Val_interval_cons, self.Val_label_geig_3,
+            self.n_points_ph, self.label_56,
+            self.label_22, self.time_ph, self.T_interval_ph,
+            self.Val_interval_ph, self.t_label_ph, self.Val_label_ph
         ]
         for widget in hiddenWidgets:
             widget.setVisible(not is_visible)
