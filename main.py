@@ -148,7 +148,9 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             case 'Датчик наличия пузырьков':
                 params_widget = {
                     'points': self.n_points_9,
-                    'time_step': self.stepT
+                    'time_step': self.stepT,
+                    'T_interval': self.T_interval_bubble,
+                    'Val_interval': self.Val_interval_bubble
                 }
             case 'Счетчик Гейгера':
                 params_widget = {
@@ -408,7 +410,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label_32,self.n_points_ph,self.label_56,
             self.label_22,self.time_ph,self.T_interval_ph,
             self.Val_interval_ph,self.t_label_ph,self.Val_label_ph,
-            self.time_ph_2, self.time_ph_3, self.label_57, self.label_58
+            self.time_ph_2, self.time_ph_3, self.label_57, self.label_58,
+            self.n_points_9, self.stepT, self.T_interval_bubble, self.Val_interval_bubble,
+            self.t_example, self.val_example,self.t_label_bubble, self.val_label_bubble,
+            self.label_27, self.label_28
         ]
         unHiddenWidgets = [
             self.T_interval,self.Val_interval,
@@ -434,7 +439,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.n_points_ph, self.label_56,
             self.label_22, self.time_ph, self.T_interval_ph,
             self.Val_interval_ph, self.t_label_ph, self.Val_label_ph,
-            self.time_ph_2, self.time_ph_3, self.label_57, self.label_58
+            self.time_ph_2, self.time_ph_3, self.label_57, self.label_58,
+            self.n_points_9, self.stepT, self.T_interval_bubble, self.Val_interval_bubble,
+            self.t_example, self.val_example, self.t_label_bubble, self.val_label_bubble,
+            self.label_27, self.label_28
         ]
         for widget in hiddenWidgets:
             widget.setVisible(not is_visible)
