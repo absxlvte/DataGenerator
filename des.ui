@@ -165,7 +165,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>7</number>
+     <number>9</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1384,8 +1384,8 @@
      <widget class="QTextEdit" name="n_points_9">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>170</y>
+        <x>10</x>
+        <y>70</y>
         <width>161</width>
         <height>41</height>
        </rect>
@@ -1397,8 +1397,8 @@
      <widget class="QTextEdit" name="stepT">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>270</y>
+        <x>10</x>
+        <y>170</y>
         <width>161</width>
         <height>41</height>
        </rect>
@@ -1410,8 +1410,8 @@
      <widget class="QLabel" name="label_27">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>120</y>
+        <x>10</x>
+        <y>30</y>
         <width>311</width>
         <height>41</height>
        </rect>
@@ -1423,14 +1423,98 @@
      <widget class="QLabel" name="label_28">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>220</y>
+        <x>10</x>
+        <y>120</y>
         <width>311</width>
         <height>41</height>
        </rect>
       </property>
       <property name="text">
        <string>Шаг времени</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="T_interval_bubble">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>230</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="Val_interval_bubble">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>280</y>
+        <width>201</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0 0 0 0</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="t_label_bubble">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>21</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>t:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="val_label_bubble">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>280</y>
+        <width>41</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>val:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="t_example">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>330</y>
+        <width>311</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>t: 0 5 10 15 25 40 45 50 55 60 70 90 95 100</string>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="val_example">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>380</y>
+        <width>311</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>val: 0 7 4 5 0 0 2 2 3 1 1 5 5 0</string>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
       </property>
      </widget>
     </widget>

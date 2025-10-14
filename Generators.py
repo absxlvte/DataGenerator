@@ -531,8 +531,6 @@ class pHSensor(DataGenerator):
         self.params = {
             'points': 1000,
             'diration': 10,
-            'time_interv': [3,2,1,2,2],
-            'ph_val': [5, 7, 14, 10, 7],
             'tr_time': 0.5,
             'N': 12,
             'Vref': 5,
@@ -551,9 +549,6 @@ class pHSensor(DataGenerator):
             'Val_interval': [-1],
             'noise_lvl': 0.1,
             'n_outliers': 5
-            #'time_interv': [3,2,1,2,2],
-            #'ph_val': [5,7,14,10,7],
-            #'tr_time': 0.1
         }
         self.signal = None
         self.time = None
