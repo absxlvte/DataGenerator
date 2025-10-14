@@ -10,23 +10,26 @@ import matplotlib.pyplot as plt
 import neurokit2 as nk
 
 
-with open("C:/Users/Zotin/Desktop/work/_Current tasks/Generator/GeneratedVal/120_70.txt", "r") as file:
-    data = file.read()
-Vref = 6
-N = 12
-k1 = 30
-k2 = 25
-data = [int(item) for item in data.split('\n') if item.strip()]
-data = [item*Vref/(2**N) for item in data]
-t = np.arange(len(data))
-peaks, properties = find_peaks(data, distance=20)
-peaks_dict = {t[index]:data[index] for index in peaks}
-verh,niz =  3.98, 2.79
-syst = k1 * verh
-diast = k2 * niz
-print(f"систолическое- {syst}; диастолическое- {diast}")
-plt.plot(data)
-plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """A = 110
 B = 25

@@ -536,49 +536,40 @@ class pHSensor(DataGenerator):
             'Vref': 5,
             'T': 298,
             'F': 96485,
-            'R': 8.314
+            'R': 8.314,
+            'T_interval': None,
+            'Val_interval': None
         }
         self.def_params = {
             'points': 1000,
             't': 10,
+            'T_interval': [-1],
+            'Val_interval': [-1]
             #'time_interv': [3,2,1,2,2],
             #'ph_val': [5,7,14,10,7],
             #'tr_time': 0.1
         }
         self.signal = None
         self.time = None
-    def configurate(self,points,t):
+    def configurate(self,points,t, T_interval, Val_interval):
         if points is not None: self.params['points'] = points
         if t is not None: self.params['t'] = t
+        if T_interval is not None: self.params['T_interval'] = T_interval
+        if Val_interval is not None: self.params['Val_interval'] = Val_interval
     def generate(self):
-        self.time = np.linspace(0,self.params['t'],self.params['points'])
-        pH = self.step_func(self.params['time_interv'],self.params['ph_val'],self.params['tr_time'])
-        V = np.zeros_like(pH)
-        for i in range(len(pH)):
-            V[i] = self.pH_to_V(pH[i])
-        self.data = pH
+        if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
+                self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
+            if len(self.params['T_interval']) != len(self.params['Val_interval']):
+                raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
+            self.time, self.data = create_dynamix(np.array(self.params['T_interval'],self.params['Val_interval'],0, self.params['t'],self.params['points']))
+    def plot(self,ax):
+        if self.data is not None:
+            ax.clear()
+            ax.plot(self.data)
+            ax.set_title(f"{self.__class__.__name__} Data")
+            ax.set_ylim(0, 4095)
+            return ax
 
-    def step_func(self, time_intervals, values, tr_time):
-        time_points = np.cumsum(time_intervals)
-        time_points = np.insert(time_points, 0, 0)
-        full_time = np.linspace(0, time_points[-1], self.params['points'])
-        output_values = np.zeros_like(full_time)
-        for i in range(len(values)):
-            t_start = time_points[i]
-            t_end = time_points[i + 1]
-            mask = (full_time >= t_start) & (full_time <= t_end)
-            if i < len(values) - 1:
-                transition_end = min(t_end, t_start + tr_time)
-                transition_mask = (full_time >= t_start) & (full_time < transition_end)
-                stable_mask = (full_time >= transition_end) & (full_time <= t_end)
-                if np.sum(transition_mask) > 0:
-                    output_values[transition_mask] = np.linspace(
-                        values[i], values[i + 1], np.sum(transition_mask))
-                if np.sum(stable_mask) > 0:
-                    output_values[stable_mask] = values[i + 1]
-            else:
-                output_values[mask] = values[i]
-        return output_values
     def pH_to_V(self, pH):
         return -(self.params['R']*self.params['T']*2.303*pH)/self.params['F']
 
