@@ -20,7 +20,7 @@ def z_in_v(Z,N,V_ref,bip=False):
 
 def v_in_z(V,N,V_ref,bip=False):
     if not bip:
-        return max(0,min(round((2**N*V)/V_ref),2**N-1))
+        return (2**N*V)/V_ref
     else:
         if V == 0:
             Z = 0
