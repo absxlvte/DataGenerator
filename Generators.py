@@ -540,7 +540,8 @@ class pHSensor(DataGenerator):
             'T_interval': None,
             'Val_interval': None,
             'noise_lvl': 0.1,
-            'n_outliers': 5
+            'n_outliers': 5,
+            'strength':0.3
         }
         self.def_params = {
             'points': 1000,
@@ -548,31 +549,42 @@ class pHSensor(DataGenerator):
             'T_interval': [-1],
             'Val_interval': [-1],
             'noise_lvl': 0.1,
-            'n_outliers': 5
+            'n_outliers': 5,
+            'strength':0.3
         }
         self.signal = None
         self.time = None
-    def configurate(self,points,duration, T_interval, Val_interval,noise_lvl,n_outliers):
+    def configurate(self,points,duration, T_interval, Val_interval,noise_lvl,n_outliers,strength):
         if points is not None: self.params['points'] = points
         if duration is not None: self.params['duration'] = duration
         if T_interval is not None: self.params['T_interval'] = T_interval
         if Val_interval is not None: self.params['Val_interval'] = Val_interval
         if n_outliers is not None: self.params['n_outliers'] = n_outliers
         if noise_lvl is not None: self.params['noise_lvl'] = noise_lvl
+        if strength is not None: self.params['strength'] = strength
     def generate(self):
         if self.params['T_interval'] is not None and self.params['Val_interval'] is not None and len(
                 self.params['T_interval']) >= 2 and len(self.params['Val_interval']) >= 2:
             if len(self.params['T_interval']) != len(self.params['Val_interval']):
                 raise ValueError("T_interval и Val_interval должны иметь одинаковую длину")
             self.data, self.time = create_dynamix(np.array(self.params['T_interval']),np.array(self.params['Val_interval']),0, self.params['duration'],self.params['points'])
+            self.data = scale_signal(self.data,
+                                     v_in_z(self.pH_to_V(0.1), self.params['N'], self.params['Vref'], bip=True),
+                                     v_in_z(self.pH_to_V(14), self.params['N'], self.params['Vref'], bip=True))
             self.add_noise(self.params['noise_lvl'])
-            self.add_outliers(self.params['n_outliers'],1)
-            self.data = scale_signal(self.data,v_in_z(self.pH_to_V(0),self.params['N'], self.params['Vref'],bip=True), v_in_z(self.pH_to_V(14),self.params['N'], self.params['Vref'],bip=True))
+            self.add_outliers(self.params['n_outliers'],self.params['strength'])
+            if max(self.data) > 2**self.params['N']-1 or min(self.data) < 0:
+                self.data = np.clip(self.data, 0, 2**self.params['N']-1)
     def plot(self,ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.time,self.data)
+            ax.plot(self.time,self.data,'k',linewidth=1.5)
+            ax.plot(self.time,v_in_z(self.pH_to_V(0.1),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 0',alpha=0.3)
+            ax.plot(self.time,v_in_z(self.pH_to_V(7),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 7',alpha=0.3)
+            ax.plot(self.time,v_in_z(self.pH_to_V(14),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 14',alpha=0.3)
             ax.set_title(f"{self.__class__.__name__} Data")
+            ax.set_ylim([0,4096])
+            ax.legend()
             return ax
     def add_outliers(self, n_outliers, strength):
         indices = np.random.choice(len(self.time), n_outliers, replace=False)

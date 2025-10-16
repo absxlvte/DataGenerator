@@ -30,7 +30,7 @@ def v_in_z(V,N,V_ref,bip=False):
             Z = int(str(Zmsb)+str(bin(Zother)[2:].zfill(N)[1:]),2)
         return Z
 
-
+print(v_in_z(-0.006,12,5,bip=True))
 
 
 

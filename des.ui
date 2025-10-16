@@ -165,7 +165,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>9</number>
+     <number>7</number>
     </property>
     <widget class="QWidget" name="page_welcome"/>
     <widget class="QWidget" name="page_sin">
@@ -1198,9 +1198,9 @@
      <widget class="QTextEdit" name="T_interval_ph">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>310</y>
-        <width>201</width>
+        <x>50</x>
+        <y>340</y>
+        <width>361</width>
         <height>41</height>
        </rect>
       </property>
@@ -1211,9 +1211,9 @@
      <widget class="QTextEdit" name="Val_interval_ph">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>370</y>
-        <width>201</width>
+        <x>50</x>
+        <y>390</y>
+        <width>361</width>
         <height>41</height>
        </rect>
       </property>
@@ -1224,8 +1224,8 @@
      <widget class="QLabel" name="t_label_ph">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>300</y>
+        <x>10</x>
+        <y>340</y>
         <width>21</width>
         <height>41</height>
        </rect>
@@ -1238,7 +1238,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>370</y>
+        <y>390</y>
         <width>41</width>
         <height>41</height>
        </rect>
@@ -1257,14 +1257,14 @@
        </rect>
       </property>
       <property name="placeholderText">
-       <string>10</string>
+       <string>0.01</string>
       </property>
      </widget>
      <widget class="QTextEdit" name="time_ph_3">
       <property name="geometry">
        <rect>
         <x>330</x>
-        <y>260</y>
+        <y>240</y>
         <width>71</width>
         <height>41</height>
        </rect>
@@ -1276,7 +1276,7 @@
      <widget class="QLabel" name="label_57">
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>150</x>
         <y>190</y>
         <width>171</width>
         <height>41</height>
@@ -1290,13 +1290,39 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>260</y>
+        <y>240</y>
         <width>191</width>
         <height>41</height>
        </rect>
       </property>
       <property name="text">
        <string>Число выбросов</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_59">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>290</y>
+        <width>191</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Сила выбросов</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="strength_ph">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>290</y>
+        <width>71</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>0.3</string>
       </property>
      </widget>
     </widget>

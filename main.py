@@ -137,7 +137,8 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                     'T_interval': self.T_interval_ph,
                     'Val_interval': self.Val_interval_ph,
                     'noise_lvl': self.time_ph_2,
-                    'n_outliers': self.time_ph_3
+                    'n_outliers': self.time_ph_3,
+                    'strength': self.strength_ph
                 }
             case 'Датчик уровня жидкости':
                 params_widget = {
@@ -413,7 +414,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.time_ph_2, self.time_ph_3, self.label_57, self.label_58,
             self.n_points_9, self.stepT, self.T_interval_bubble, self.Val_interval_bubble,
             self.t_example, self.val_example,self.t_label_bubble, self.val_label_bubble,
-            self.label_27, self.label_28
+            self.label_27, self.label_28, self.strength_ph,self.label_59
         ]
         unHiddenWidgets = [
             self.T_interval,self.Val_interval,
@@ -442,7 +443,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.time_ph_2, self.time_ph_3, self.label_57, self.label_58,
             self.n_points_9, self.stepT, self.T_interval_bubble, self.Val_interval_bubble,
             self.t_example, self.val_example, self.t_label_bubble, self.val_label_bubble,
-            self.label_27, self.label_28
+            self.label_27, self.label_28,self.strength_ph,self.label_59
         ]
         for widget in hiddenWidgets:
             widget.setVisible(not is_visible)
