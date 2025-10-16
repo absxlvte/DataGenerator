@@ -204,9 +204,9 @@ def scale_signal(signal, target_min, target_max, offset=0):
     return scaled
 
 
-def bubbleCreate(time=np.array([0, 5, 10, 15, 25, 40, 45, 50, 55, 60, 70, 90, 95, 100]),
+def bubbleCreate(time=np.array([0, 50, 100, 150, 250, 400, 450, 500, 550, 600, 700, 900, 950, 1000]),
                    value=np.array([0, 7, 4, 5, 0, 0, 2, 2, 3, 1, 1, 5, 5, 0]),
-                   points=100,
+                   points=1000,
                    time_step=1,
                    d=0.1,
                    vliq=1.400,

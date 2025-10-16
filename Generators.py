@@ -649,7 +649,7 @@ class BubbleSensor(DataGenerator):
         self.delt_v = None
         self.state = None
         self.params = {
-            'points': 100,
+            'points': 1000,
             'd': 0.1,
             'Vliq': 1.400,
             'time_step': 1,
@@ -657,7 +657,7 @@ class BubbleSensor(DataGenerator):
             'Val_interval': None
         }
         self.def_params = {
-            'points': 100,
+            'points': 1000,
             'time_step': 1,
             'T_interval': [-1],
             'Val_interval': [-1]
@@ -678,6 +678,10 @@ class BubbleSensor(DataGenerator):
             time= np.array(self.params['T_interval']),
             value = np.array(self.params['Val_interval'])
         )
+        plt.figure()
+        plt.plot(self.Tsend)
+        plt.plot(self.Trecv)
+        plt.show()
 
     def plot(self,ax):
         if (self.Trecv is not None) and (self.Tsend is not None):
