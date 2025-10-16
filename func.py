@@ -94,7 +94,12 @@ def v_in_z(V,N,V_ref,bip=False):
     return (2**N*V)/V_ref if not bip else (2**N * (V + V_ref)) / (2 * V_ref)
 
 def z_in_v(Z,N,V_ref,bip=False):
-    return (Z*V_ref)/(2**N) if not bip else (2 * Z * V_ref) / (2**N) - V_ref
+    if not bip:
+        return (Z*V_ref)/(2**N)
+    else:
+        Zmsb = int(bin(Z)[2:].zfill(N)[0])
+        Zother = int(bin(Z)[2:].zfill(N)[1:],2)
+        return ((-1)**Zmsb*Zother*V_ref/2)/(2**(N-1))
 
 
 def createNitrate(product: Literal['Tomatoes','Spinach','Beet','Cabbage','Carrot','Potato','Cucumbers'],
@@ -218,3 +223,4 @@ def bubbleCreate(time=np.array([0, 50, 100, 150, 250, 400, 450, 500, 550, 600, 7
     T_recv = T_send + delta_t
     state = [t > 1.1 * t_liq for t in delta_t]
     return T_send, T_recv, state, delta_t, time_new
+

@@ -10,10 +10,33 @@ import matplotlib.pyplot as plt
 import neurokit2 as nk
 
 
+def z_in_v(Z,N,V_ref,bip=False):
+    if not bip:
+        return (Z*V_ref)/(2**N)
+    else:
+        Zmsb = int(bin(Z)[2:].zfill(N)[0])
+        Zother = int(bin(Z)[2:].zfill(N)[1:],2)
+        return ((-1)**Zmsb*Zother*V_ref/2)/(2**(N-1))
+
+def v_in_z(V,N,V_ref,bip=False):
+    if not bip:
+        return max(0,min(round((2**N*V)/V_ref),2**N-1))
+    else:
+        Zmsb = 0 if V>= 0 else 1
+        Zother = int(abs(V)*(2**(N-1))/(V_ref/2)-1)
+        Z = int(str(Zmsb)+str(bin(Zother)[2:]),2)
+        print(f'V: {V};Zmsb: {Zmsb}; Zother: {Zother}; Z: {Z}')
+        return Z
 
 
+#v_in_z(-2.5,12,5,bip=True)
 
-
+V = [-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5]
+Z = [v_in_z(x,12,5,bip=True) for x in V]
+plt.plot(V,Z)
+plt.xlim([-2.5,2.5])
+plt.ylim([0,2**12])
+plt.show()
 
 
 

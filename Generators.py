@@ -585,6 +585,9 @@ class pHSensor(DataGenerator):
         self.data += noise
     def pH_to_V(self, pH):
         return -(self.params['R']*self.params['T']*2.303*pH)/self.params['F']
+    def V_to_pH(self, V):
+        return -(self.params['F']*V)/(2.303*self.params['R']*self.params['T'])
+
 
 class LiquidLvlSensor(DataGenerator):
     def __init__(self):
