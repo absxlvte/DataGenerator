@@ -293,6 +293,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         if not hasattr(self,'data') or self.data is None:
             QtWidgets.QMessageBox.warning(self, "Ошибка", "Нечего сохранять")
             return
+        
 
     def save_to_txt(self):
         if not hasattr(self,'data') or self.data is None:
