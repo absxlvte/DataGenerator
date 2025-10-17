@@ -14,6 +14,7 @@ class DataGenerator(ABC):
         self.time = None
         self.params = {}
         self.def_params = {}
+        self.save_params = {}
     @abstractmethod
     def configurate(self):
         pass

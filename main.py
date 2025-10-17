@@ -293,7 +293,116 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         if not hasattr(self,'data') or self.data is None:
             QtWidgets.QMessageBox.warning(self, "Ошибка", "Нечего сохранять")
             return
-        
+        if self.current_generator_name == 'Датчик нитратов':
+            directory = QtWidgets.QFileDialog.getExistingDirectory(
+                self,
+                "Выберите папку для сохранения",
+                QtCore.QDir.currentPath(),
+                QtWidgets.QFileDialog.ShowDirsOnly
+            )
+            if not directory:
+                return
+            for filename, values in self.data.items():
+                safe_filename = f"{filename.replace(' ', '_')}.txt"
+                file_path = QtCore.QDir(directory).filePath(safe_filename)
+
+                with open(file_path, 'w', encoding='utf-8') as file:
+                    values_str = '\n'.join(map(str, values))
+                    file.write(values_str)
+            QtWidgets.QMessageBox.information(
+                self,
+                "Сохранение завершено",
+                f"Файлы успешно сохранены в папку:\n{directory}\n\n"
+                f"Сохранено файлов: {len(self.data)}")
+            return
+
+        if self.current_generator_name == 'Датчик наличия пузырьков':
+            file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Сохранить данные",
+                QtCore.QDir.currentPath()+'/Trecv',
+                "Text files (*.txt);;All Files (*)"
+            )
+            if not file_path:
+                return
+            try:
+                if not file_path.endswith('.txt'):
+                    file_path += '.txt'
+                np.savetxt(
+                    file_path,
+                    self.data[1],
+                    fmt='%.6f',
+                    delimiter=' ',
+                    newline='\n'
+                )
+                QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
+            if self.current_generator_name == 'Датчик наличия пузырьков':
+                file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                    self,
+                    "Сохранить данные",
+                    QtCore.QDir.currentPath()+'/Tsend',
+                    "Text files (*.txt);;All Files (*)"
+                )
+                if not file_path:
+                    return
+                try:
+                    if not file_path.endswith('.txt'):
+                        file_path += '.txt'
+                    np.savetxt(
+                        file_path,
+                        self.data[0],
+                        fmt='%.6f',
+                        delimiter=' ',
+                        newline='\n'
+                    )
+                    QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
+                except Exception as e:
+                    QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
+
+            return
+
+        file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Сохранить данные",
+            QtCore.QDir.currentPath() + '/' + str(self.current_generator_name),
+            "Text files (*.txt);;All Files (*)"
+        )
+        int_format = [
+            'Датчик температуры',
+            'Гидравлический датчик давления',
+            'Датчик наличия крови',
+            'Датчик насыщения крови кислородом',
+            'Датчик pH',
+            'Датчик артериального давления',
+            'Счетчик Гейгера',
+            'Датчик расхода',
+            'Датчик глюкозы'
+
+        ]
+        if self.current_generator_name in int_format:
+            xformat = '%d'
+        elif self.current_generator_name == 'Датчик уровня жидкости':
+            xformat = '%d %1.3f %1.3f %1.3f %1.3f %1.3f'
+        else:
+            xformat = '%.4f'
+        if not file_path:
+            return
+        try:
+            if not file_path.endswith('.txt'):
+                file_path += '.txt'
+            np.savetxt(
+                file_path,
+                self.data,
+                fmt=xformat,
+                delimiter=' ',
+                newline='\n'
+            )
+            QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
+
 
     def save_to_txt(self):
         if not hasattr(self,'data') or self.data is None:
