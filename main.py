@@ -32,7 +32,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         self.button_Reset.pressed.connect(self.reset_all_fields)
         self.button_Generate.pressed.connect(self.generate_values)
         self.button_setDefault.pressed.connect(self.set_default_values)
-        self.button_Save.pressed.connect(self.save_to_txt)
+        self.button_Save.pressed.connect(self.save_to_txt_adv)
         #Graphics
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
@@ -373,20 +373,23 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             'Датчик температуры',
             'Гидравлический датчик давления',
             'Датчик наличия крови',
-            'Датчик насыщения крови кислородом',
             'Датчик pH',
             'Датчик артериального давления',
             'Счетчик Гейгера',
             'Датчик расхода',
-            'Датчик глюкозы'
-
+            'Капнограф',
+            'Датчик проводимости'
         ]
         if self.current_generator_name in int_format:
-            xformat = '%d'
+            xformat = '%.4f %d'
         elif self.current_generator_name == 'Датчик уровня жидкости':
             xformat = '%d %1.3f %1.3f %1.3f %1.3f %1.3f'
+        elif self.current_generator_name == 'Датчик глюкозы':
+            xformat = '%d'
+        elif self.current_generator_name == 'Датчик насыщения крови кислородом':
+            xformat = '%.4f %d %d'
         else:
-            xformat = '%.4f'
+            xformat = '%.4f %.4f'
         if not file_path:
             return
         try:

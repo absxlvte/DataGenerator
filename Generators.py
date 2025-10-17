@@ -160,6 +160,7 @@ class TemperatureSensor(DataGenerator):
             self.add_noise(self.params['noise_level'])
             self.normalize(self.params['z_min'], self.params['z_max'])
             self.data = self.data.astype(int)
+            self.data = np.column_stack((self.time,self.data))
     def normalize(self,min_val,max_val):
         current_min = np.min(self.data)
         current_max = np.max(self.data)
@@ -180,7 +181,7 @@ class TemperatureSensor(DataGenerator):
         if self.data is not None:
             ax.clear()
             ax.set_title(f"{self.__class__.__name__} Data")
-            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.data[:,0], self.data[:,1], 'b-')
             ax.plot(self.params['T_interval'],
                     self.signal,
                     'rx')
@@ -238,6 +239,7 @@ class HydraulicSensor(DataGenerator):
             self.add_noise(self.params['noise_level'])
             self.normalize(self.params['z_min'], self.params['z_max'])
             self.data = self.data.astype(int)
+            self.data = np.column_stack((self.time, self.data))
 
     def normalize(self, min_val, max_val):
         current_min = np.min(self.data)
@@ -262,7 +264,7 @@ class HydraulicSensor(DataGenerator):
         if self.data is not None:
             ax.clear()
             ax.set_title(f"{self.__class__.__name__} Data")
-            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.data[:,0], self.data[:,1], 'b-')
             ax.plot(self.params['T_interval'],
                     self.signal,
                     'rx')
@@ -327,6 +329,7 @@ class BloodSensor(DataGenerator):
             min_offset, max_offset, offset = self.I_to_Z(self.params['base_I'])-self.params['shift'], self.I_to_Z(self.params['base_I'])+self.params['shift'], self.I_to_Z(self.params['base_I'])
             self.normalize(min_offset, max_offset,offset)
             self.data = self.data.astype(int)
+            self.data = np.column_stack((self.time, self.data))
             #student:
             vst = [z*5/(2**12) for z in self.data]
             Ist = [v/0.5 for v in vst]
@@ -362,7 +365,7 @@ class BloodSensor(DataGenerator):
     def plot(self, ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.data)
+            ax.plot(self.data[:,0],self.data[:,1])
             ax.set_title(f"{self.__class__.__name__} Data")
             ax.set_ylim(0,4095)
             return ax
@@ -413,7 +416,7 @@ class PPGSensor(DataGenerator):
         R = (ac940second/np.mean(self.data_660))/(ac660first/np.mean(self.data_940))
         print(f"R* = {R}")
         self.result = self.params['A']-self.params['B']*R
-        self.data = np.column_stack((self.data_660,self.data_940)) #1st col - 660 2nd col - 940
+        self.data = np.column_stack((self.time,self.data_660,self.data_940)) #0th col - time 1st col - 660 2nd col - 940
     def plot(self,ax):
         if hasattr(self, 'data_660') and hasattr(self, 'data_940'):
             ax.clear()
@@ -460,11 +463,12 @@ class HeartRateSensor(DataGenerator):
         time = np.linspace(1,5,1000*self.params['duration'])[100:]
         self.data = scale_signal(ecg_signal, 0.1, 3)
         self.time = time
+        self.data = np.column_stack((self.time,self.data))
 
     def plot(self, ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.time,self.data)
+            ax.plot(self.data[:,0],self.data[:,1])
             ax.set_title(f"{self.__class__.__name__} Data")
             ax.set_xlabel("Время (с)")
             ax.set_ylabel("Напряжение (В)")
@@ -521,10 +525,11 @@ class pHSensor(DataGenerator):
             self.add_outliers(self.params['n_outliers'],self.params['strength'])
             if max(self.data) > 2**self.params['N']-1 or min(self.data) < 0:
                 self.data = np.clip(self.data, 0, 2**self.params['N']-1)
+            self.data = np.column_stack((self.time,self.data))
     def plot(self,ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.time,self.data,'k',linewidth=1.5)
+            ax.plot(self.data[:,0],self.data[:,1],'k',linewidth=1.5)
             ax.plot(self.time,v_in_z(self.pH_to_V(0.1),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 0',alpha=0.3)
             ax.plot(self.time,v_in_z(self.pH_to_V(7),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 7',alpha=0.3)
             ax.plot(self.time,v_in_z(self.pH_to_V(14),self.params['N'], self.params['Vref'], bip=True)*np.ones_like(self.time), '--',label= 'pH = 14',alpha=0.3)
@@ -699,13 +704,14 @@ class GeigerSensor(DataGenerator):
             arr = np.random.choice([0, 1], size=self.params['points'], p=[1 - p, p])
             self.data = arr
             self.time = np.linspace(0,60,self.params['points'])
+        self.data = np.column_stack((self.time,self.data))
     def plot(self,ax):
         if self.data is not None:
             ax.clear()
             if self.signal is None:
-                ax.plot(self.time,self.data)
+                ax.plot(self.data[:,0], self.data[:,1])
             else:
-                ax.plot(self.time, self.data,alpha=0.5)
+                ax.plot(self.data[:,0], self.data[:,1],alpha=0.5)
                 ax.plot(*zip(*self.signal.items()), 'r-')
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
@@ -779,12 +785,13 @@ class BloodPressureSensor(DataGenerator):
                 break
         print(f"syst: {systolic_pressure * self.params['k1']}")
         print(f"diast: {diastolic_pressure*self.params['k2']}")
+        self.data = np.column_stack((time,self.data))
     def V_to_Z(self,v):
         return 2**self.params['N']*v/self.params['Vref']
     def plot(self,ax):
         if self.data is not None:
             ax.clear()
-            ax.plot(self.data)
+            ax.plot(self.data[:,0],self.data[:,1])
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
 
@@ -831,14 +838,14 @@ class ConsSensor(DataGenerator):
             arr = np.random.choice([0, 1], size=self.params['points'], p=[1 - p, p])
             self.data = arr
             self.time = np.linspace(0, 60, self.params['points'])
-
+        self.data = np.column_stack((self.time,self.data))
     def plot(self, ax):
         if self.data is not None:
             ax.clear()
             if self.signal is None:
-                ax.plot(self.time, self.data)
+                ax.plot(self.data[:,0], self.data[:,1])
             else:
-                ax.plot(self.time, self.data, alpha=0.5)
+                ax.plot(self.data[:,0], self.data[:,1], alpha=0.5)
                 ax.plot(*zip(*self.signal.items()), 'r-')
             ax.set_title(f"{self.__class__.__name__} Data")
             return ax
@@ -971,7 +978,7 @@ class Capnograph(DataGenerator):
             self.add_noise(self.params['noise_level'])
             self.normalize(self.params['z_min'], self.params['z_max'])
             self.data = self.data.astype(int)
-
+            self.data = np.column_stack((self.time,self.data))
     def normalize(self, min_val, max_val):
         current_min = np.min(self.data)
         current_max = np.max(self.data)
@@ -995,7 +1002,7 @@ class Capnograph(DataGenerator):
         if self.data is not None:
             ax.clear()
             ax.set_title(f"{self.__class__.__name__} Data")
-            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.data[:,0], self.data[:,1], 'b-')
             ax.plot(self.params['T_interval'],
                     self.signal,
                     'rx')
@@ -1054,7 +1061,7 @@ class ConductivitySensor(DataGenerator):
             self.add_noise(self.params['noise_level'])
             self.normalize(self.params['z_min'], self.params['z_max'])
             self.data = self.data.astype(int)
-
+            self.data = np.column_stack((self.time,self.data))
     def normalize(self, min_val, max_val):
         current_min = np.min(self.data)
         current_max = np.max(self.data)
@@ -1078,7 +1085,7 @@ class ConductivitySensor(DataGenerator):
         if self.data is not None:
             ax.clear()
             ax.set_title(f"{self.__class__.__name__} Data")
-            ax.plot(self.time, self.data, 'b-')
+            ax.plot(self.data[:,0], self.data[:,1], 'b-')
             ax.plot(self.params['T_interval'],
                     self.signal,
                     'rx')
