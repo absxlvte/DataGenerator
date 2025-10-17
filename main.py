@@ -381,7 +381,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             'Датчик наличия крови',
             'Датчик насыщения крови кислородом',
             'Датчик pH',
-            'Датчик артериального давления'
+            'Датчик артериального давления',
+            'Счетчик Гейгера',
+            'Датчик расхода',
+            'Датчик глюкозы'
 
         ]
         if self.current_generator_name in int_format:
@@ -389,7 +392,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         elif self.current_generator_name == 'Датчик уровня жидкости':
             xformat = '%d %1.3f %1.3f %1.3f %1.3f %1.3f'
         else:
-            xformat = '%.2f'
+            xformat = '%.4f'
         if not file_path:
             return
         try:
