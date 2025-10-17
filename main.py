@@ -7,6 +7,8 @@ from Generators import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from des import Ui_MainWindow
+import traceback
+import sys
 
 class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -287,6 +289,10 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
             self.data = generator.data
         except Exception as e:
             QtWidgets.QMessageBox.critical(self,"Ошибка генерации",f"ошибка: {str(e)}")
+    def save_to_txt_adv(self):
+        if not hasattr(self,'data') or self.data is None:
+            QtWidgets.QMessageBox.warning(self, "Ошибка", "Нечего сохранять")
+            return
 
     def save_to_txt(self):
         if not hasattr(self,'data') or self.data is None:
@@ -329,7 +335,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                     file_path += '.txt'
                 np.savetxt(
                     file_path,
-                    self.data[0],
+                    self.data[1],
                     fmt='%.6f',
                     delimiter=' ',
                     newline='\n'
@@ -351,7 +357,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                         file_path += '.txt'
                     np.savetxt(
                         file_path,
-                        self.data[1],
+                        self.data[0],
                         fmt='%.6f',
                         delimiter=' ',
                         newline='\n'

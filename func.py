@@ -92,7 +92,7 @@ def create_pulse_wave(Amp=1,t_start=0,t_stop=5,zero_offset=0, points=1000, inver
 
 def v_in_z(V,N,V_ref,bip=False):
     if not bip:
-        return max(0,min(round((2**N*V)/V_ref),2**N-1))
+        return (2**N*V)/V_ref
     else:
         if V == 0:
             Z = 0
@@ -230,6 +230,8 @@ def bubbleCreate(time=np.array([0, 50, 100, 150, 250, 400, 450, 500, 550, 600, 7
     delta_t = scale_signal(delta_t, t_liq, 1)
     T_send = time_new + t_liq * np.random.uniform(1.0, 1.5, size=len(time_new)) + noise * np.random.normal(size=len(time_new)) * np.max(np.abs(time_new))
     T_recv = T_send + delta_t
+    T_recv = np.clip(T_recv,0,max(T_recv))
+    T_send = np.clip(T_send,0, max(T_recv))
     state = [t > 1.1 * t_liq for t in delta_t]
     return T_send, T_recv, state, delta_t, time_new
 

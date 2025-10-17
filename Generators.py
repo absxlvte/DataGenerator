@@ -413,61 +413,6 @@ class PPGSensor(DataGenerator):
         print(f"R* = {R}")
         self.result = self.params['A']-self.params['B']*R
         self.data = np.column_stack((self.data_660,self.data_940)) #1st col - 660 2nd col - 940
-        '''self.time = np.linspace(0, 5, self.params['points'])
-        DC_660 = self.U_to_Z(1)
-        DС_940 = ((self.params['A']-self.params['SpO2'])*self.U_to_Z(0.45))/(self.params['B']*(self.U_to_Z(0.55)/DC_660))
-        Z_660 = self.U_to_Z(1-0.1)/2*np.sin(2*np.pi*1.2*self.time)+self.U_to_Z(0.55)
-        Z_940 = self.U_to_Z(1-0.1-0.1)/2*np.sin(2*np.pi*1.2*self.time)+self.U_to_Z(0.45)
-        zero_crossings_660 = np.where(np.diff(np.sign(Z_660 - self.U_to_Z(0.55))))[0]
-        zero_crossings_940 = np.where(np.diff(np.sign(Z_940 - self.U_to_Z(0.45))))[0]
-        window_size = 50
-        half_window = window_size // 2
-        cnt = 0
-        for i in zero_crossings_660:
-            if cnt%2==1:
-                start = max(i - half_window, 0)
-                end = min(i + half_window, len(Z_660))
-                x = np.linspace(0, 2 * np.pi, end - start)
-                Z_660[start:end] = -self.U_to_Z(0.1) * np.sin(x) + self.U_to_Z(0.55)
-            cnt += 1
-        cnt = 0
-        for j in zero_crossings_940:
-            if cnt%2==1:
-                start = max(j - half_window, 0)
-                end = min(j + half_window, len(Z_660))
-                x = np.linspace(0, 2 * np.pi, end - start)
-                Z_940[start:end] = -self.U_to_Z(0.1) * np.sin(x) + self.U_to_Z(0.45)
-            cnt += 1
-        Z_660 += DC_660
-        Z_940 += DС_940
-        noise_660 = np.random.normal(0, 1, 1000)
-        noise_940 = np.random.normal(0, 1, 1000)
-        Z_660 += 10*noise_660
-        Z_940 += 10*noise_940
-        self.data_660 = Z_660
-        self.data_940 = Z_940
-        self.data = np.column_stack((Z_660, Z_940))'''
-        #print(f"DC_660={DC_660} DС_940={DС_940}")
-
-        #data = np.loadtxt('qwe.txt', dtype=int)
-        #Z_660 = data[:, 0]
-        #Z_940 = data[:, 1]
-        # print(f"{Z_660[0]} {Z_940[0]}")
-        #DC_660 = np.mean(Z_660)
-        #DC_940 = np.mean(Z_940)
-        # print(f"{DC_660} {DC_940}")
-        #AC_660 = Z_660 - DC_660
-        #AC_940 = Z_940 - DC_940
-        #AC_660 = (np.abs(np.max(AC_660)) + np.abs(np.min(AC_660))) / 2
-        #AC_940 = (np.abs(np.max(AC_940)) + np.abs(np.min(AC_940))) / 2
-        # print(f"{AC_660} {AC_940}")
-        #DC_660 -= AC_660
-        #DC_940 -= AC_940
-        #R = (AC_660 / DC_660) / (AC_940 / DC_940)
-        #print(f"{R}")
-        #A, B = 110, 25
-        #SpO2 = A - B * R
-        #print(f"SpO2 = {SpO2}%")
     def plot(self,ax):
         if hasattr(self, 'data_660') and hasattr(self, 'data_940'):
             ax.clear()
@@ -693,6 +638,7 @@ class BubbleSensor(DataGenerator):
             time= np.array(self.params['T_interval']),
             value = np.array(self.params['Val_interval'])
         )
+        self.data = [self.Tsend,self.Trecv]
         plt.figure()
         plt.plot(self.Tsend)
         plt.plot(self.Trecv)
