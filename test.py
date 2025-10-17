@@ -9,8 +9,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import neurokit2 as nk
 
-
-
+a = np.array([1,2,3])
+b = np.array([-1,-2,-3])
+data_to_save = np.hstack((a, b))
+print(data_to_save)
 #debugging errors
 """error_message = (
                 f"Произошла ошибка:\n"

@@ -312,7 +312,7 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 file_path = QtCore.QDir(directory).filePath(safe_filename)
 
                 with open(file_path, 'w', encoding='utf-8') as file:
-                    values_str = ' '.join(map(str, values))
+                    values_str = '\n'.join(map(str, values))
                     file.write(values_str)
             QtWidgets.QMessageBox.information(
                 self,
@@ -371,10 +371,9 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
             "Сохранить данные",
-            QtCore.QDir.currentPath()+'/'+str(self.current_generator_name),
+            QtCore.QDir.currentPath() + '/' + str(self.current_generator_name),
             "Text files (*.txt);;All Files (*)"
         )
-        xformat = ''
         int_format = [
             'Датчик температуры',
             'Гидравлический датчик давления',
@@ -405,9 +404,9 @@ class FPIBS_Generator(QtWidgets.QMainWindow, Ui_MainWindow):
                 delimiter=' ',
                 newline='\n'
             )
-            QtWidgets.QMessageBox.information(self,"Успех","Файл сохранен!")
+            QtWidgets.QMessageBox.information(self, "Успех", "Файл сохранен!")
         except Exception as e:
-            QtWidgets.QMessageBox.critical(self,"Ошибка",f'ошибка: {str(e)}')
+            QtWidgets.QMessageBox.critical(self, "Ошибка", f'ошибка: {str(e)}')
 
     def toggle_interpolation_fields(self, state):
         is_visible = state == QtCore.Qt.Checked
